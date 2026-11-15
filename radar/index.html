@@ -18,17 +18,17 @@
 /* Layout: a daily checklist. Today's count on top, then search phrases as tappable keys grouped by intent. */
 :root{
   --bg:#F1F4F3; --surface:#FFFFFF; --ink:#12201C; --muted:#55645F; --line:#D3DBD8;
-  --accent:#0B6E5B; --accent-ink:#FFFFFF; --tag:#E2EBE7; --done:#C9D6D1; --done-ink:#3F4F49;
+  --accent:#0B6E5B; --accent-ink:#FFFFFF; --tag:#E2EBE7; --done:#C9D6D1; --done-ink:#3F4F49; --bad:#A6402F;
   --display:"Unbounded","Arial Black",system-ui,sans-serif;
   --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#0F1715; --surface:#16221F; --ink:#E7EFEC; --muted:#9BACA6; --line:#283833;
-  --accent:#55CFB2; --accent-ink:#06211B; --tag:#1E2F2A; --done:#22332E; --done-ink:#8FA39C; color-scheme:dark } }
+  --accent:#55CFB2; --accent-ink:#06211B; --tag:#1E2F2A; --done:#22332E; --done-ink:#8FA39C; --bad:#F08A76; color-scheme:dark } }
 :root[data-theme="dark"]{
   --bg:#0F1715; --surface:#16221F; --ink:#E7EFEC; --muted:#9BACA6; --line:#283833;
-  --accent:#55CFB2; --accent-ink:#06211B; --tag:#1E2F2A; --done:#22332E; --done-ink:#8FA39C; color-scheme:dark }
+  --accent:#55CFB2; --accent-ink:#06211B; --tag:#1E2F2A; --done:#22332E; --done-ink:#8FA39C; --bad:#F08A76; color-scheme:dark }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 .wrap{max-width:720px;margin:0 auto;padding-block:28px 56px;
@@ -79,6 +79,28 @@ ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
 .by h2{font-size:18px;font-weight:700}
 .by a{color:var(--accent-ink);font-weight:600}
 .step{font-family:var(--display);font-weight:700;color:var(--accent);margin-right:8px}
+
+.how{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:h}
+.how li{counter-increment:h;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;grid-template-columns:36px minmax(0,1fr);gap:6px 12px;align-items:start}
+.how li::before{content:counter(h);grid-row:1 / span 2;width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:700;display:flex;align-items:center;justify-content:center}
+.how b{font-weight:600;font-size:17px}
+.how .pic{grid-column:2;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.fk{display:inline-flex;align-items:center;min-height:38px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-weight:500;font-size:14px}
+.fk.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.fk.sq{border-radius:10px}
+.fk.sq::after{content:"↗";margin-left:8px;color:var(--accent);font-family:var(--mono);font-size:13px}
+.tap{font-size:20px}
+.post{flex-basis:100%;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg);display:flex;flex-direction:column;gap:4px;font-size:15px}
+.post .who{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.post .who i{width:26px;height:26px;border-radius:50%;background:var(--tag);display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;font-weight:700}
+.post.reply{margin-left:22px;flex-basis:calc(100% - 22px)}
+.post .link{color:var(--accent);font-family:var(--mono);font-size:13px}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.cmp > div{border-radius:14px;padding:14px;border:1px solid var(--line);background:var(--surface);display:flex;flex-direction:column;gap:8px;min-width:0}
+.cmp .tag{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-weight:500}
+.cmp .bad .tag{color:var(--bad)}.cmp .good .tag{color:var(--accent)}
+.cmp q{quotes:none;font-size:15px}
+.cmp small{color:var(--muted);font-size:13px}
 </style>
 </head>
 <body>
@@ -89,8 +111,25 @@ ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
     <p class="muted">Каждый день в Threads кто-то пишет «посоветуйте мастера» или «ищу репетитора». Радар открывает поиск по таким фразам в одно нажатие. Без регистрации, ничего не публикует от вашего имени.</p>
   </header>
 
+
+  <section aria-labelledby="how">
+    <h2 id="how">Как это работает: пример</h2>
+    <p class="hint">Оля делает маникюр в Белграде и хочет найти клиентов.</p>
+    <ol class="how">
+      <li><b>Оля выбирает своё дело</b>
+        <div class="pic"><span class="fk on">Красота</span><span class="fk">Репетитор</span><span class="fk">Фото и видео</span><span class="tap" aria-hidden="true">👆</span></div></li>
+      <li><b>Нажимает на готовую фразу</b>
+        <div class="pic"><span class="fk sq">посоветуйте мастера маникюра</span><span class="tap" aria-hidden="true">👆</span></div></li>
+      <li><b>Открывается Threads с постами тех, кто ищет мастера</b>
+        <div class="pic"><div class="post"><span class="who"><i>М</i>Марина · 2 часа назад</span>Девочки, посоветуйте мастера маникюра в Белграде</div></div></li>
+      <li><b>Оля отвечает Марине по делу</b>
+        <div class="pic"><div class="post reply"><span class="who"><i>О</i>Оля</span>Смотрите, чтобы мастер работал с вашим покрытием. Я делаю гель и укрепление, если что, спрашивайте.</div></div></li>
+      <li><b>Марина заходит в профиль Оли и видит ссылку на запись</b>
+        <div class="pic"><div class="post"><span class="who"><i>О</i>Оля · маникюр, Белград</span><span class="link">запись: ссылка в шапке профиля</span></div></div></li>
+    </ol>
+  </section>
   <section aria-labelledby="s1">
-    <h2 id="s1"><span class="step">1</span>Чем вы занимаетесь?</h2>
+    <h2 id="s1"><span class="step">1</span>Теперь вы. Чем вы занимаетесь?</h2>
     <div class="niches" id="niches"></div>
     <div class="city">
       <label for="city">Ваш город (не обязательно)</label>
@@ -126,14 +165,13 @@ ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
     <div class="bar"><i id="bar"></i></div>
   </div>
 
-  <section class="rules" aria-labelledby="g5">
-    <h2 id="g5">Как отвечать людям, которых вы нашли</h2>
-    <p class="hint">Вы открыли поиск и видите пост человека, который ищет мастера. Три совета, как написать ему ответ в Threads.</p>
-    <ol>
-      <li>Ответьте на его вопрос. Два полезных предложения, без рассказа о себе.</li>
-      <li>Не добавляйте в ответ ссылку на себя и слова «напишите мне». Свою ссылку на запись или сайт держите в шапке вашего профиля Threads: кому интересно, тот зайдёт туда сам.</li>
-      <li>Не копируйте один и тот же текст под разные посты, это выглядит как спам. Каждый ответ пишите заново.</li>
-    </ol>
+  <section aria-labelledby="g5">
+    <h2 id="g5">Как написать ответ, чтобы к вам пришли</h2>
+    <div class="cmp">
+      <div class="bad"><span class="tag">Так не работает</span><q>Я мастер, пишите мне, вот ссылка на запись…</q><small>Так пишут все. Это пролистывают, а за одинаковые ответы со ссылкой могут счесть спамом.</small></div>
+      <div class="good"><span class="tag">Так работает</span><q>Смотрите, чтобы мастер работал с вашим покрытием. Я делаю гель и укрепление, если что, спрашивайте.</q><small>Польза и ни одной ссылки. Кому интересно, зайдёт в ваш профиль, а ссылка на запись стоит там.</small></div>
+    </div>
+    <p class="hint">Перед началом откройте свой профиль в Threads и поставьте в шапку ссылку на запись, сайт или мессенджер.</p>
   </section>
 
   <section class="by" aria-labelledby="by">
