@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Радар клиентов: поиск заказчиков в Threads</title>
+<meta name="description" content="Бесплатный инструмент для мастеров и малого бизнеса: готовые поисковые фразы, по которым в Threads находятся люди, ищущие вашу услугу.">
+<meta property="og:title" content="Радар клиентов">
+<meta property="og:description" content="Найдите в Threads людей, которые прямо сейчас ищут вашу услугу. Бесплатно, без регистрации.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nasta11.github.io/radar/">
+<meta property="og:image" content="https://nasta11.github.io/og.jpg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;700&display=swap">
+<style>body{margin:0}[hidden]{display:none!important}
+/* Layout: a daily checklist. Today's count on top, then search phrases as tappable keys grouped by intent. */
+:root{
+  --bg:#F1F4F3; --surface:#FFFFFF; --ink:#12201C; --muted:#55645F; --line:#D3DBD8;
+  --accent:#0B6E5B; --accent-ink:#FFFFFF; --tag:#E2EBE7; --done:#C9D6D1; --done-ink:#3F4F49;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0F1715; --surface:#16221F; --ink:#E7EFEC; --muted:#9BACA6; --line:#283833;
+  --accent:#55CFB2; --accent-ink:#06211B; --tag:#1E2F2A; --done:#22332E; --done-ink:#8FA39C; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0F1715; --surface:#16221F; --ink:#E7EFEC; --muted:#9BACA6; --line:#283833;
+  --accent:#55CFB2; --accent-ink:#06211B; --tag:#1E2F2A; --done:#22332E; --done-ink:#8FA39C; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:720px;margin:0 auto;padding-block:28px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-0.01em}
+h1{font-size:clamp(26px,6vw,36px);line-height:1.1;font-weight:700}
+h2{font-size:15px;font-weight:500;line-height:1.3}
+p{margin:0}
+.muted{color:var(--muted)}
+header{display:flex;flex-direction:column;gap:10px}
+.today{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.count{font-family:var(--display);font-weight:700;font-size:44px;line-height:1;font-variant-numeric:tabular-nums;min-width:1.4em}
+.today .txt{flex:1;min-width:180px;display:flex;flex-direction:column;gap:2px}
+.today .txt b{font-weight:600}
+.pm{display:flex;gap:8px}
+button{font:inherit;color:inherit;cursor:pointer}
+.pm button{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--bg);font-size:24px;font-weight:600}
+.pm button.plus{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar{height:8px;border-radius:99px;background:var(--tag);overflow:hidden;flex-basis:100%}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .2s}
+section{display:flex;flex-direction:column;gap:12px}
+.hint{font-size:14px;color:var(--muted)}
+.keys{display:flex;flex-wrap:wrap;gap:8px}
+.keys a{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:10px 14px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-weight:500;max-width:100%}
+.keys a::after{content:"↗";color:var(--accent);font-family:var(--mono);font-size:14px}
+.keys a.seen{background:var(--done);border-color:var(--done);color:var(--done-ink)}
+.keys a.seen::after{content:"✓";color:var(--done-ink)}
+.keys .rm{border:0;background:none;color:var(--muted);font-size:18px;padding:0 2px;margin-left:-2px}
+form{display:flex;gap:8px;flex-wrap:wrap}
+input{flex:1;min-width:0;min-height:46px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;padding:10px 14px}
+form button{min-height:46px;border-radius:12px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:10px 16px;font-weight:600}
+ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+.rules{background:var(--tag);border-radius:16px;padding:18px}
+.reset{align-self:flex-start;border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding:4px 0;font-size:14px}
+@media (prefers-reduced-motion: reduce){ .bar i{transition:none} }
+
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.niches{display:flex;flex-wrap:wrap;gap:8px}
+.niches button{min-height:46px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:500}
+.niches button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.city{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.city label{font-size:14px;color:var(--muted)}
+.city input{flex:1;min-width:160px}
+.by{background:var(--accent);color:var(--accent-ink);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.by h2{font-size:18px;font-weight:700}
+.by a{color:var(--accent-ink);font-weight:600}
+.step{font-family:var(--display);font-weight:700;color:var(--accent);margin-right:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Бесплатный инструмент</span>
+    <h1>Радар клиентов</h1>
+    <p class="muted">Каждый день в Threads кто-то пишет «посоветуйте мастера» или «ищу репетитора». Радар открывает поиск по таким фразам в одно нажатие. Без регистрации, ничего не публикует от вашего имени.</p>
+  </header>
+
+  <section aria-labelledby="s1">
+    <h2 id="s1"><span class="step">1</span>Чем вы занимаетесь?</h2>
+    <div class="niches" id="niches"></div>
+    <div class="city">
+      <label for="city">Ваш город (не обязательно)</label>
+      <input id="city" type="text" autocomplete="off" placeholder="например: Белград">
+    </div>
+  </section>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2"><span class="step">2</span>Откройте запрос и ответьте людям</h2>
+    <p class="hint">Нажмите на фразу: поиск Threads откроется в новой вкладке. Переключите его на «Недавние».</p>
+    <div class="keys" data-group="ask" id="ask"></div>
+    <p class="hint" id="cityHint" hidden>В вашем городе:</p>
+    <div class="keys" id="cityKeys"></div>
+  </section>
+
+  <section aria-labelledby="g4">
+    <h2 id="g4">Свои запросы</h2>
+    <p class="hint">Добавьте фразы, которыми ваши клиенты описывают свою задачу. Они сохранятся в этом браузере.</p>
+    <div class="keys" id="mine"></div>
+    <form id="add">
+      <input id="q" type="text" autocomplete="off" placeholder="например: торт на заказ" aria-label="Новый запрос">
+      <button type="submit">Добавить</button>
+    </form>
+  </section>
+
+  <div class="today" aria-live="polite">
+    <div class="count" id="count">0</div>
+    <div class="txt"><b>ответов сегодня</b><span class="muted" id="goalText">Цель на день: 3</span></div>
+    <div class="pm">
+      <button type="button" id="minus" aria-label="Убрать один ответ">−</button>
+      <button type="button" id="plus" class="plus" aria-label="Добавить один ответ">+</button>
+    </div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+
+  <section class="rules" aria-labelledby="g5">
+    <h2 id="g5">Как отвечать, чтобы вам написали</h2>
+    <ol>
+      <li>Отвечайте на вопрос человека, а не рассказывайте о себе. Два полезных предложения.</li>
+      <li>Не пишите «напишите мне» и не ставьте ссылку. Она есть в вашем профиле, туда зайдут сами.</li>
+      <li>Один и тот же текст под разными постами выглядит как спам. Каждый ответ пишите заново.</li>
+    </ol>
+  </section>
+
+  <section class="by" aria-labelledby="by">
+    <h2 id="by">Нужен бот для вашего дела?</h2>
+    <p>Я делаю Telegram-ботов для малого бизнеса: записывают клиентов, отвечают на частые вопросы, присылают заявки. Радар тоже сделала я.</p>
+    <p>Анастасия Капленко · <a href="https://t.me/NastaKasi">Telegram @NastaKasi</a> · <a href="https://nasta11.github.io/">портфолио</a></p>
+  </section>
+
+  <button type="button" class="reset" id="reset">Сбросить отметки за сегодня</button>
+</div>
+
+<script>
+(function(){
+  var N={
+    beauty:{name:"Красота",ask:["посоветуйте мастера маникюра","ищу мастера по ресницам","посоветуйте парикмахера","ищу косметолога","где сделать брови"],kw:["маникюр","парикмахер","косметолог"]},
+    tutor:{name:"Репетитор",ask:["ищу репетитора","посоветуйте репетитора","нужен репетитор по английскому","репетитор по математике","подготовка к экзаменам"],kw:["репетитор","курсы английского"]},
+    photo:{name:"Фото и видео",ask:["ищу фотографа","посоветуйте фотографа","нужен видеограф","семейная фотосессия","фотограф на свадьбу"],kw:["фотограф","фотосессия"]},
+    psy:{name:"Психолог",ask:["ищу психолога","посоветуйте психолога","нужен психолог","семейный психолог","психолог онлайн"],kw:["психолог"]},
+    fin:{name:"Бухгалтер, юрист",ask:["ищу бухгалтера","посоветуйте бухгалтера","нужен юрист","посоветуйте юриста","открыть фирму"],kw:["бухгалтер","юрист"]},
+    home:{name:"Ремонт и дом",ask:["ищу мастера","посоветуйте электрика","нужен сантехник","ремонт квартиры","посоветуйте клининг"],kw:["ремонт","сантехник","клининг"]},
+    food:{name:"Еда на заказ",ask:["торт на заказ","посоветуйте кондитера","домашняя еда на заказ","кейтеринг","где заказать торт"],kw:["торт на заказ","кондитер"]},
+    dev:{name:"Сайты и боты",ask:["нужен бот","ищу разработчика","нужен сайт","кто делает ботов","посоветуйте разработчика"],kw:["разработчик","сайт под ключ"]}
+  };
+  var GOAL=3, today=new Date().toISOString().slice(0,10);
+  function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  var day=load("radar-day",{}); if(day.date!==today) day={date:today,count:0,seen:[]};
+  var mine=load("radar-mine",[]), niche=load("radar-niche","beauty"), city=load("radar-city","");
+  if(!N[niche]) niche="beauty";
+  function url(q){return "https://www.threads.com/search?q="+encodeURIComponent(q)+"&serp_type=default&filter=recent"}
+  function key(q,removable){
+    var a=document.createElement("a"); a.href=url(q); a.target="_blank"; a.rel="noopener"; a.textContent=q;
+    if(day.seen.indexOf(q)>-1) a.className="seen";
+    a.addEventListener("click",function(){ if(day.seen.indexOf(q)<0){day.seen.push(q);save("radar-day",day)} a.className="seen"; });
+    if(!removable) return a;
+    var w=document.createElement("span"); w.style.display="inline-flex"; w.style.alignItems="center"; w.style.gap="4px";
+    var b=document.createElement("button"); b.type="button"; b.className="rm"; b.textContent="×"; b.setAttribute("aria-label","Удалить запрос «"+q+"»");
+    b.addEventListener("click",function(){mine=mine.filter(function(x){return x!==q});save("radar-mine",mine);render()});
+    w.appendChild(a); w.appendChild(b); return w;
+  }
+  function render(){
+    var nb=document.getElementById("niches"); nb.textContent="";
+    Object.keys(N).forEach(function(id){
+      var b=document.createElement("button"); b.type="button"; b.textContent=N[id].name; b.setAttribute("aria-pressed",String(id===niche));
+      b.addEventListener("click",function(){niche=id;save("radar-niche",niche);render()}); nb.appendChild(b);
+    });
+    var ask=document.getElementById("ask"); ask.textContent=""; N[niche].ask.forEach(function(q){ask.appendChild(key(q,false))});
+    var ck=document.getElementById("cityKeys"); ck.textContent=""; var c=city.trim();
+    document.getElementById("cityHint").hidden=!c;
+    if(c) N[niche].kw.forEach(function(k){ck.appendChild(key(k+" "+c,false))});
+    var m=document.getElementById("mine"); m.textContent=""; mine.forEach(function(q){m.appendChild(key(q,true))});
+    document.getElementById("count").textContent=day.count;
+    document.getElementById("bar").style.width=Math.min(100,day.count/GOAL*100)+"%";
+    document.getElementById("goalText").textContent=day.count>=GOAL?"Цель на день выполнена":"Цель на день: "+GOAL;
+  }
+  var ci=document.getElementById("city"); ci.value=city;
+  ci.addEventListener("input",function(){city=ci.value;save("radar-city",city);render()});
+  document.getElementById("plus").addEventListener("click",function(){day.count++;save("radar-day",day);render()});
+  document.getElementById("minus").addEventListener("click",function(){day.count=Math.max(0,day.count-1);save("radar-day",day);render()});
+  document.getElementById("reset").addEventListener("click",function(){day={date:today,count:0,seen:[]};save("radar-day",day);render()});
+  document.getElementById("add").addEventListener("submit",function(e){e.preventDefault();var i=document.getElementById("q"),v=i.value.trim();if(!v)return;if(mine.indexOf(v)<0){mine.push(v);save("radar-mine",mine)}i.value="";render()});
+  render();
+})();
+</script>
+</body>
+</html>
