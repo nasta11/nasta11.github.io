@@ -40,6 +40,7 @@ header p{margin:0;color:var(--muted)}
 button{font:inherit;color:inherit;cursor:pointer}
 .chips button{min-height:44px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:500}
 .chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chips button.empty{opacity:.45}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .count{font-size:14px;color:var(--muted)}
 .list{display:flex;flex-direction:column;gap:16px}
@@ -149,10 +150,12 @@ td small{display:block;color:var(--muted);font-size:13px}
     return esc(c);
   }
   function uniq(base,key){var out=base.slice();cards.forEach(function(c){if(c[key]&&out.indexOf(c[key])<0)out.push(c[key])});return out}
-  function chips(id,arr,cur,set){
+  function chips(id,arr,cur,set,count){
     var box=document.getElementById(id); box.textContent="";
     arr.forEach(function(v){
-      var b=document.createElement("button"); b.type="button"; b.textContent=(ICON[v]?ICON[v]+" ":"")+v; b.setAttribute("aria-pressed",String(v===cur));
+      var n=count?count(v):null;
+      var b=document.createElement("button"); b.type="button"; b.textContent=(ICON[v]?ICON[v]+" ":"")+v+(n?" · "+n:""); b.setAttribute("aria-pressed",String(v===cur));
+      if(n===0&&v!==cur) b.className="empty";
       b.addEventListener("click",function(){set(v);render()}); box.appendChild(b);
     });
   }
@@ -172,9 +175,18 @@ td small{display:block;color:var(--muted);font-size:13px}
     return el;
   }
   function render(){
-    chips("cities",uniq(BASE_CITIES,"city"),city,function(v){city=v});
-    chips("services",uniq(BASE_SERVICES,"service"),svc,function(v){svc=v});
-    chips("places",PLACES,place,function(v){place=v});
+    // Picking a service jumps to a city where it exists; the place filter resets,
+    // so a choice never leaves an empty list just because of an old filter.
+    chips("cities",uniq(BASE_CITIES,"city"),city,function(v){city=v;place="Все"});
+    chips("services",uniq(BASE_SERVICES,"service"),svc,function(v){
+      svc=v; place="Все";
+      if(!cards.some(function(c){return c.city===city&&c.service===v})){
+        for(var i=0;i<cards.length;i++) if(cards[i].service===v){city=cards[i].city;break;}
+      }
+    });
+    chips("places",PLACES,place,function(v){place=v},function(v){
+      return cards.filter(function(m){return m.city===city&&m.service===svc&&(v==="Все"||m.place===v)}).length;
+    });
     var found=cards.filter(function(m){return m.city===city&&m.service===svc&&(place==="Все"||m.place===place)});
     document.getElementById("vList").setAttribute("aria-pressed",String(view==="list"));
     document.getElementById("vMap").setAttribute("aria-pressed",String(view==="map"));
