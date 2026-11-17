@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Свои мастера в Сербии · Botika</title>
+<meta name="description" content="Русско- и украиноязычные мастера в Суботице, Нови-Саде и Белграде: где принимают, чем работают и точные цены на процедуры.">
+<meta property="og:title" content="Свои мастера в Сербии">
+<meta property="og:description" content="Выберите услугу и сразу увидите, где мастер принимает, чем работает и сколько точно стоит каждая процедура.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nasta11.github.io/mastera/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@600;700&display=swap">
+<style>body{margin:0}[hidden]{display:none!important}
+/* Layout: phone-first search. City, service and "where" filters on top; each card answers three questions: what she uses, exact prices, where she works. */
+:root{
+  --bg:#F6F1EC; --surface:#FFFFFF; --ink:#2A1F1C; --muted:#73655F; --line:#E6DCD4;
+  --accent:#B4485E; --accent-ink:#FFFFFF; --soft:#F7E3E6; --mint:#0B6E5B; --mint-soft:#E1F0EA;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1A1514; --surface:#241D1B; --ink:#F3EAE6; --muted:#B4A59F; --line:#3A2F2C;
+  --accent:#E87F93; --accent-ink:#2A0F15; --soft:#3A2328; --mint:#55CFB2; --mint-soft:#1E302A; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1A1514; --surface:#241D1B; --ink:#F3EAE6; --muted:#B4A59F; --line:#3A2F2C;
+  --accent:#E87F93; --accent-ink:#2A0F15; --soft:#3A2328; --mint:#55CFB2; --mint-soft:#1E302A; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding-block:20px 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:20px}
+.demo{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--soft);color:var(--accent);border-radius:10px;padding:8px 12px;text-align:center}
+h1{font-family:var(--display);font-size:clamp(26px,7vw,34px);line-height:1.1;margin:0;font-weight:700;text-wrap:balance}
+header{display:flex;flex-direction:column;gap:8px}
+header p{margin:0;color:var(--muted)}
+.lbl{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.row{display:flex;flex-direction:column;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;color:inherit;cursor:pointer}
+.chips button{min-height:44px;padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:500}
+.chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.count{font-size:14px;color:var(--muted)}
+.list{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;gap:12px;align-items:center}
+.ava{width:52px;height:52px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:700;font-size:20px;color:#fff}
+.who{min-width:0;display:flex;flex-direction:column}
+.who b{font-size:17px}
+.who span{font-size:14px;color:var(--muted)}
+.tag{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 8px;flex:none}
+.block{display:flex;flex-direction:column;gap:8px}
+.bh{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.place{display:flex;gap:10px;align-items:flex-start;background:var(--mint-soft);border-radius:12px;padding:10px 12px}
+.place .ic{font-size:20px;line-height:1.2}
+.place b{display:block}
+.place span{font-size:14px;color:var(--muted)}
+.uses{display:flex;flex-wrap:wrap;gap:6px}
+.uses span{font-size:14px;border:1px solid var(--line);border-radius:10px;padding:5px 10px;background:var(--bg)}
+.uses span.dev::before{content:"⚙ ";color:var(--mint)}
+.uses span.cos::before{content:"🧴 "}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.p{text-align:right;font-weight:700;white-space:nowrap;padding-left:12px;font-variant-numeric:tabular-nums}
+td small{display:block;color:var(--muted);font-size:13px}
+.more{align-self:flex-start;border:0;background:none;color:var(--accent);font-weight:600;padding:2px 0;text-decoration:underline;text-underline-offset:3px}
+.book{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:12px;flex-wrap:wrap}
+.book .lang{font-size:13px;color:var(--muted)}
+.book .tg{font-family:var(--mono);font-size:14px;color:var(--accent)}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:18px;padding:20px;text-align:center;color:var(--muted)}
+.join{background:var(--mint);color:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.join b{font-size:17px}
+.foot{font-size:13px;color:var(--muted);text-align:center}
+
+.state{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.state b{font-size:17px}
+.join a:not(.btn){color:#fff;font-weight:700}
+.btn{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:10px 18px;border-radius:12px;background:#fff;color:var(--mint);font-weight:700;text-decoration:none}
+.book a{color:var(--accent);font-family:var(--mono);font-size:14px}
+.sample{opacity:.85}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Свои мастера</h1>
+    <p>Русско- и украиноязычные мастера в Сербии. Выберите услугу и сразу увидите, где мастер принимает, чем работает и сколько точно стоит каждая процедура.</p>
+  </header>
+
+  <div class="row"><span class="lbl">Город</span><div class="chips" id="cities"></div></div>
+  <div class="row"><span class="lbl">Услуга</span><div class="chips" id="services"></div></div>
+  <div class="row"><span class="lbl">Где принимает</span><div class="chips" id="places"></div></div>
+
+  <div class="count" id="count" aria-live="polite">Загружаю мастеров…</div>
+  <div class="list" id="list"></div>
+
+  <div class="join">
+    <b>Вы мастер?</b>
+    <span>Добавьте свою карточку бесплатно: чем работаете, точные цены и где принимаете. Заполняется за 5 минут в Telegram.</span>
+    <a class="btn" id="botLink" href="https://t.me/" target="_blank" rel="noopener" hidden>Заполнить карточку</a>
+  </div>
+  <div class="foot">Botika · каталог «Свои мастера» · <a href="https://nasta11.github.io/">nasta11.github.io</a></div>
+</div>
+
+<script>
+(function(){
+  var API="https://lifearchive-platform.vercel.app/api/mastera";
+  var BASE_CITIES=["Суботица","Нови-Сад","Белград"];
+  var BASE_SERVICES=["Косметолог","Маникюр и педикюр","Брови и ресницы","Волосы","Массаж"];
+  var PLACES=["Все","Салон","Кабинет","На дому","Выезжаю к клиенту"];
+  var ICON={"Салон":"🏢","Кабинет":"🚪","На дому":"🏠","Выезжаю к клиенту":"🚗"};
+  var PAL=["#C9677D","#8E74B8","#C9963F","#5E9E86","#C9805E"];
+  var SAMPLE={name:"Алина",city:"Суботица",service:"Косметолог",place:"Кабинет",placeNote:"центр, 2 минуты от Корзо",
+    devices:"ультразвуковой скрабер, микротоки",cosmetics:"израильская профессиональная косметика",
+    prices:[{name:"Ультразвуковая чистка лица",duration:"35 мин",price:3500,currency:"дин"},{name:"Комбинированная чистка",duration:"60 мин",price:4500,currency:"дин"},{name:"Массаж лица",duration:"30 мин",price:2500,currency:"дин"}],
+    languages:"Русский, Українська",contact:"@primer",sample:true};
+  var cards=[], city="Суботица", svc="Косметолог", place="Все", open={};
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function fmt(p){return Number(p.price).toLocaleString("ru-RU").replace(/\u00a0/g," ")+" "+(p.currency==="€"?"€":"дин")}
+  function contactLink(c){
+    c=String(c||"").trim();
+    var m=c.match(/^@([A-Za-z0-9_]{4,32})$/);
+    if(m) return '<a href="https://t.me/'+m[1]+'" target="_blank" rel="noopener">'+esc(c)+'</a>';
+    if(/^https:\/\/[^\s"<>]+$/.test(c)) return '<a href="'+esc(c)+'" target="_blank" rel="noopener">'+esc(c.replace(/^https:\/\//,""))+'</a>';
+    return esc(c);
+  }
+  function uniq(base,key){var out=base.slice();cards.forEach(function(c){if(c[key]&&out.indexOf(c[key])<0)out.push(c[key])});return out}
+  function chips(id,arr,cur,set){
+    var box=document.getElementById(id); box.textContent="";
+    arr.forEach(function(v){
+      var b=document.createElement("button"); b.type="button"; b.textContent=(ICON[v]?ICON[v]+" ":"")+v; b.setAttribute("aria-pressed",String(v===cur));
+      b.addEventListener("click",function(){set(v);render()}); box.appendChild(b);
+    });
+  }
+  function card(m,i){
+    var key=m.id||("s"+i), shown=open[key]?m.prices:m.prices.slice(0,3);
+    var el=document.createElement("article"); el.className="card"+(m.sample?" sample":"");
+    var uses=String(m.devices||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="dev">'+esc(x)+'</span>'}).join("")+
+             String(m.cosmetics||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="cos">'+esc(x)+'</span>'}).join("");
+    el.innerHTML=
+      '<div class="top"><div class="ava" style="background:'+PAL[i%PAL.length]+'">'+esc((m.name||"?").charAt(0))+'</div><div class="who"><b>'+esc(m.name)+'</b><span>'+esc(m.service)+' · '+esc(m.city)+'</span></div>'+(m.sample?'<span class="tag">пример</span>':'')+'</div>'+
+      '<div class="place"><span class="ic" aria-hidden="true">'+(ICON[m.place]||"📍")+'</span><div><b>'+esc(m.place)+'</b><span>'+esc(m.placeNote)+'</span></div></div>'+
+      (uses?'<div class="block"><span class="bh">Чем работает</span><div class="uses">'+uses+'</div></div>':'')+
+      '<div class="block"><span class="bh">Цены</span><table>'+shown.map(function(r){return '<tr><td>'+esc(r.name)+(r.duration?'<small>'+esc(r.duration)+'</small>':'')+'</td><td class="p">'+fmt(r)+'</td></tr>'}).join("")+'</table>'+
+      (m.prices.length>3?'<button type="button" class="more">'+(open[key]?'Свернуть':'Все цены ('+m.prices.length+')')+'</button>':'')+'</div>'+
+      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>запись: '+(m.sample?esc(m.contact):contactLink(m.contact))+'</span></div>';
+    var mb=el.querySelector(".more"); if(mb) mb.addEventListener("click",function(){open[key]=!open[key];render()});
+    return el;
+  }
+  function render(){
+    chips("cities",uniq(BASE_CITIES,"city"),city,function(v){city=v});
+    chips("services",uniq(BASE_SERVICES,"service"),svc,function(v){svc=v});
+    chips("places",PLACES,place,function(v){place=v});
+    var found=cards.filter(function(m){return m.city===city&&m.service===svc&&(place==="Все"||m.place===place)});
+    var list=document.getElementById("list"); list.textContent="";
+    var count=document.getElementById("count");
+    if(found.length){ count.textContent="Найдено: "+found.length; found.forEach(function(m,i){list.appendChild(card(m,i))}); return; }
+    count.textContent="";
+    var e=document.createElement("div"); e.className="state";
+    e.innerHTML=cards.length
+      ?'<b>Здесь пока никого нет</b><span>В этом городе по этой услуге мастеров ещё нет. Знаете хорошего мастера? Перешлите ему ссылку на эту страницу.</span>'
+      :'<b>Каталог только открылся</b><span>Мастера сейчас заполняют свои карточки. Вот как будет выглядеть карточка:</span>';
+    list.appendChild(e);
+    if(!cards.length) list.appendChild(card(SAMPLE,0));
+  }
+  render();
+  fetch(API).then(function(r){if(!r.ok) throw new Error(r.status); return r.json()}).then(function(data){
+    cards=(data.cards||[]).map(function(c){c.prices=Array.isArray(c.prices)?c.prices:[];return c});
+    if(data.bot){var a=document.getElementById("botLink"); a.href=data.bot; a.hidden=false;}
+    if(cards.length && !cards.some(function(c){return c.city===city&&c.service===svc})){city=cards[0].city; svc=cards[0].service;}
+    render();
+  }).catch(function(){
+    document.getElementById("count").textContent="Не получилось загрузить мастеров. Обновите страницу через минуту.";
+  });
+})();
+</script>
+</body>
+</html>
