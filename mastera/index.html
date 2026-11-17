@@ -80,6 +80,15 @@ td small{display:block;color:var(--muted);font-size:13px}
 .btn{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:10px 18px;border-radius:12px;background:#fff;color:var(--mint);font-weight:700;text-decoration:none}
 .book a{color:var(--accent);font-family:var(--mono);font-size:14px}
 .sample{opacity:.85}
+.view{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px;align-self:flex-start}
+.view button{min-height:40px;padding:8px 18px;border:0;border-radius:10px;background:none;font-weight:600;color:var(--muted)}
+.view button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+#map{height:min(60vh,420px);border-radius:18px;border:1px solid var(--line);overflow:hidden;background:var(--surface);z-index:0}
+.maphint{font-size:14px;color:var(--muted)}
+.leaflet-popup-content{font-family:var(--body);font-size:14px;line-height:1.4;margin:12px 14px}
+.leaflet-popup-content b{font-size:15px}
+.leaflet-popup-content button{margin-top:6px;border:0;background:none;padding:0;color:#B4485E;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.card.flash{outline:3px solid var(--accent);outline-offset:2px;transition:outline-color 1.2s}
 </style>
 </head>
 <body>
@@ -92,6 +101,15 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="row"><span class="lbl">Город</span><div class="chips" id="cities"></div></div>
   <div class="row"><span class="lbl">Услуга</span><div class="chips" id="services"></div></div>
   <div class="row"><span class="lbl">Где принимает</span><div class="chips" id="places"></div></div>
+
+  <div class="view" role="group" aria-label="Как показать">
+    <button type="button" id="vList" aria-pressed="true">☰ Список</button>
+    <button type="button" id="vMap" aria-pressed="false">🗺 Карта</button>
+  </div>
+  <div id="mapBox" hidden>
+    <div id="map" role="region" aria-label="Карта мастеров"></div>
+    <p class="maphint" id="mapHint"></p>
+  </div>
 
   <div class="count" id="count" aria-live="polite">Загружаю мастеров…</div>
   <div class="list" id="list"></div>
@@ -116,7 +134,9 @@ td small{display:block;color:var(--muted);font-size:13px}
     devices:"ультразвуковой скрабер, микротоки",cosmetics:"израильская профессиональная косметика",
     prices:[{name:"Ультразвуковая чистка лица",duration:"35 мин",price:3500,currency:"дин"},{name:"Комбинированная чистка",duration:"60 мин",price:4500,currency:"дин"},{name:"Массаж лица",duration:"30 мин",price:2500,currency:"дин"}],
     languages:"Русский, Українська",contact:"@primer",sample:true};
-  var cards=[], city="Суботица", svc="Косметолог", place="Все", open={};
+  var cards=[], city="Суботица", svc="Косметолог", place="Все", open={}, view="list";
+  var CENTER={"Суботица":[46.1003,19.6656],"Нови-Сад":[45.2671,19.8335],"Белград":[44.8125,20.4612]};
+  var map=null, layer=null, leafletLoading=false;
 
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function num(v){return Number(v).toLocaleString("ru-RU").replace(/\u00a0/g," ")}
@@ -138,7 +158,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   }
   function card(m,i){
     var key=m.id||("s"+i), shown=open[key]?m.prices:m.prices.slice(0,3);
-    var el=document.createElement("article"); el.className="card"+(m.sample?" sample":"");
+    var el=document.createElement("article"); el.className="card"+(m.sample?" sample":""); if(m.id) el.id="m-"+m.id;
     var uses=String(m.devices||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="dev">'+esc(x)+'</span>'}).join("")+
              String(m.cosmetics||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="cos">'+esc(x)+'</span>'}).join("");
     el.innerHTML=
@@ -156,6 +176,10 @@ td small{display:block;color:var(--muted);font-size:13px}
     chips("services",uniq(BASE_SERVICES,"service"),svc,function(v){svc=v});
     chips("places",PLACES,place,function(v){place=v});
     var found=cards.filter(function(m){return m.city===city&&m.service===svc&&(place==="Все"||m.place===place)});
+    document.getElementById("vList").setAttribute("aria-pressed",String(view==="list"));
+    document.getElementById("vMap").setAttribute("aria-pressed",String(view==="map"));
+    document.getElementById("mapBox").hidden=view!=="map";
+    if(view==="map") drawMap(found);
     var list=document.getElementById("list"); list.textContent="";
     var count=document.getElementById("count");
     if(found.length){ count.textContent="Найдено: "+found.length; found.forEach(function(m,i){list.appendChild(card(m,i))}); return; }
@@ -167,6 +191,47 @@ td small{display:block;color:var(--muted);font-size:13px}
     list.appendChild(e);
     if(!cards.length) list.appendChild(card(SAMPLE,0));
   }
+  function hasPoint(m){return typeof m.lat==="number"&&typeof m.lon==="number"}
+  function loadLeaflet(done){
+    if(window.L) return done();
+    if(leafletLoading) return; leafletLoading=true;
+    var css=document.createElement("link"); css.rel="stylesheet"; css.href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"; document.head.appendChild(css);
+    var js=document.createElement("script"); js.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+    js.onload=function(){leafletLoading=false;done()};
+    js.onerror=function(){leafletLoading=false;document.getElementById("mapHint").textContent="Карта не загрузилась. Проверьте интернет и обновите страницу."};
+    document.head.appendChild(js);
+  }
+  function drawMap(found){
+    if(!window.L){loadLeaflet(render);return;}
+    if(!map){
+      map=L.map("map",{scrollWheelZoom:false});
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+      layer=L.layerGroup().addTo(map);
+    }
+    setTimeout(function(){map.invalidateSize()},0);
+    layer.clearLayers();
+    var pts=found.filter(hasPoint), accent=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#B4485E";
+    pts.forEach(function(m){
+      var mk=L.circleMarker([m.lat,m.lon],{radius:11,color:"#fff",weight:3,fillColor:accent,fillOpacity:1}).addTo(layer);
+      var box=document.createElement("div");
+      box.innerHTML='<b>'+esc(m.name)+'</b><br>'+esc(m.service)+'<br>'+(ICON[m.place]||"📍")+' '+esc(m.place)+(m.placeNote?'<br><span style="color:#73655F">'+esc(m.placeNote)+'</span>':'')+
+        '<br><a href="https://www.google.com/maps/dir/?api=1&destination='+m.lat+','+m.lon+'" target="_blank" rel="noopener">Маршрут ↗</a><br><button type="button">Цены и запись ↓</button>';
+      box.querySelector("button").addEventListener("click",function(){
+        var c=document.getElementById("m-"+m.id); if(!c) return;
+        c.scrollIntoView({behavior:"smooth",block:"start"}); c.classList.add("flash"); setTimeout(function(){c.classList.remove("flash")},1600);
+      });
+      mk.bindPopup(box);
+    });
+    if(pts.length>1) map.fitBounds(pts.map(function(m){return [m.lat,m.lon]}),{padding:[40,40],maxZoom:15});
+    else if(pts.length===1) map.setView([pts[0].lat,pts[0].lon],15);
+    else map.setView(CENTER[city]||CENTER["Суботица"],13);
+    var off=found.length-pts.length, hint=document.getElementById("mapHint");
+    if(!found.length) hint.textContent="";
+    else if(!pts.length) hint.textContent="Точки на карте пока нет ни у кого: эти мастера принимают на дому, выезжают или не отметили адрес. Карточки ниже.";
+    else hint.textContent="На карте: "+pts.length+(off?". Ещё "+off+" принимают на дому, выезжают или не отметили адрес, они в списке ниже.":". Нажмите на точку, чтобы увидеть, кто там принимает.");
+  }
+  document.getElementById("vList").addEventListener("click",function(){view="list";render()});
+  document.getElementById("vMap").addEventListener("click",function(){view="map";render()});
   render();
   fetch(API).then(function(r){if(!r.ok) throw new Error(r.status); return r.json()}).then(function(data){
     cards=(data.cards||[]).map(function(c){c.prices=Array.isArray(c.prices)?c.prices:[];return c});
