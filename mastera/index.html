@@ -50,6 +50,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .who{min-width:0;display:flex;flex-direction:column}
 .who b{font-size:17px}
 .who span{font-size:14px;color:var(--muted)}
+.tag.job{color:var(--accent);border-color:currentColor}
 .tag{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 8px;flex:none}
 .block{display:flex;flex-direction:column;gap:8px}
 .bh{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
@@ -102,6 +103,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="row"><span class="lbl">Город</span><div class="chips" id="cities"></div></div>
   <div class="row"><span class="lbl">Услуга</span><div class="chips" id="services"></div></div>
   <div class="row"><span class="lbl">Где принимает</span><div class="chips" id="places"></div></div>
+  <div class="row"><span class="lbl">Работа</span><div class="chips" id="jobs"></div></div>
 
   <div class="view" role="group" aria-label="Как показать">
     <button type="button" id="vList" aria-pressed="true">☰ Список</button>
@@ -135,7 +137,8 @@ td small{display:block;color:var(--muted);font-size:13px}
     devices:"ультразвуковой скрабер, микротоки",cosmetics:"израильская профессиональная косметика",
     prices:[{name:"Ультразвуковая чистка лица",duration:"35 мин",price:3500,currency:"дин"},{name:"Комбинированная чистка",duration:"60 мин",price:4500,currency:"дин"},{name:"Массаж лица",duration:"30 мин",price:2500,currency:"дин"}],
     languages:"Русский, Українська",contact:"@primer",sample:true};
-  var cards=[], city="Суботица", svc="Косметолог", place="Все", open={}, view="list";
+  var cards=[], city="Суботица", svc="Косметолог", place="Все", job="Все мастера", open={}, view="list";
+  var JOB="💼 Ищут постоянную работу";
   var CENTER={"Суботица":[46.1003,19.6656],"Нови-Сад":[45.2671,19.8335],"Белград":[44.8125,20.4612]};
   var map=null, layer=null, leafletLoading=false;
 
@@ -165,7 +168,7 @@ td small{display:block;color:var(--muted);font-size:13px}
     var uses=String(m.devices||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="dev">'+esc(x)+'</span>'}).join("")+
              String(m.cosmetics||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="cos">'+esc(x)+'</span>'}).join("");
     el.innerHTML=
-      '<div class="top"><div class="ava" style="background:'+PAL[i%PAL.length]+'">'+esc((m.name||"?").charAt(0))+'</div><div class="who"><b>'+esc(m.name)+'</b><span>'+esc(m.service)+' · '+esc(m.city)+'</span></div>'+(m.sample?'<span class="tag">пример</span>':'')+'</div>'+
+      '<div class="top"><div class="ava" style="background:'+PAL[i%PAL.length]+'">'+esc((m.name||"?").charAt(0))+'</div><div class="who"><b>'+esc(m.name)+'</b><span>'+esc(m.service)+' · '+esc(m.city)+'</span></div>'+(m.sample?'<span class="tag">пример</span>':'')+(m.seeksJob?'<span class="tag job">ищет работу</span>':'')+'</div>'+
       '<div class="place"><span class="ic" aria-hidden="true">'+(ICON[m.place]||"📍")+'</span><div><b>'+esc(m.place)+'</b><span>'+esc(m.placeNote)+'</span></div></div>'+
       (uses?'<div class="block"><span class="bh">Чем работает</span><div class="uses">'+uses+'</div></div>':'')+
       '<div class="block"><span class="bh">Цены</span><table>'+shown.map(function(r){return '<tr><td>'+esc(r.name)+(r.duration?'<small>'+esc(r.duration)+'</small>':'')+'</td><td class="p">'+fmt(r)+'</td></tr>'}).join("")+'</table>'+
@@ -177,9 +180,9 @@ td small{display:block;color:var(--muted);font-size:13px}
   function render(){
     // Picking a service jumps to a city where it exists; the place filter resets,
     // so a choice never leaves an empty list just because of an old filter.
-    chips("cities",uniq(BASE_CITIES,"city"),city,function(v){city=v;place="Все"});
+    chips("cities",uniq(BASE_CITIES,"city"),city,function(v){city=v;place="Все";job="Все мастера"});
     chips("services",uniq(BASE_SERVICES,"service"),svc,function(v){
-      svc=v; place="Все";
+      svc=v; place="Все"; job="Все мастера";
       if(!cards.some(function(c){return c.city===city&&c.service===v})){
         for(var i=0;i<cards.length;i++) if(cards[i].service===v){city=cards[i].city;break;}
       }
@@ -187,7 +190,10 @@ td small{display:block;color:var(--muted);font-size:13px}
     chips("places",PLACES,place,function(v){place=v},function(v){
       return cards.filter(function(m){return m.city===city&&m.service===svc&&(v==="Все"||m.place===v)}).length;
     });
-    var found=cards.filter(function(m){return m.city===city&&m.service===svc&&(place==="Все"||m.place===place)});
+    chips("jobs",["Все мастера",JOB],job,function(v){job=v},function(v){
+      return cards.filter(function(m){return m.city===city&&m.service===svc&&(place==="Все"||m.place===place)&&(v!==JOB||m.seeksJob)}).length;
+    });
+    var found=cards.filter(function(m){return m.city===city&&m.service===svc&&(place==="Все"||m.place===place)&&(job!==JOB||m.seeksJob)});
     document.getElementById("vList").setAttribute("aria-pressed",String(view==="list"));
     document.getElementById("vMap").setAttribute("aria-pressed",String(view==="map"));
     document.getElementById("mapBox").hidden=view!=="map";
