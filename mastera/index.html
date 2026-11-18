@@ -150,6 +150,13 @@ td small{display:block;color:var(--muted);font-size:13px}
     var m=c.match(/^@([A-Za-z0-9_]{4,32})$/);
     if(m) return '<a href="https://t.me/'+m[1]+'" target="_blank" rel="noopener">'+esc(c)+'</a>';
     if(/^https:\/\/[^\s"<>]+$/.test(c)) return '<a href="'+esc(c)+'" target="_blank" rel="noopener">'+esc(c.replace(/^https:\/\//,""))+'</a>';
+    // "WhatsApp +381 64 123 4567", "ватсап 064…" or just a phone number: open a WhatsApp chat.
+    var phone=c.match(/\+?\d[\d\s()\-]{7,}\d/);
+    if(phone && (/whats|ватс|вотс|viber|вайбер/i.test(c) || phone[0].length>=c.length-1)){
+      var digits=phone[0].replace(/\D/g,""); if(digits.charAt(0)==="0") digits="381"+digits.slice(1);
+      if(/viber|вайбер/i.test(c)) return esc(c);
+      return '<a href="https://wa.me/'+digits+'" target="_blank" rel="noopener">'+esc(c)+'</a>';
+    }
     return esc(c);
   }
   function uniq(base,key){var out=base.slice();cards.forEach(function(c){if(c[key]&&out.indexOf(c[key])<0)out.push(c[key])});return out}
