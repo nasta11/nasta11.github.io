@@ -91,24 +91,34 @@ td small{display:block;color:var(--muted);font-size:13px}
 .leaflet-popup-content{font-family:var(--body);font-size:14px;line-height:1.4;margin:12px 14px}
 .leaflet-popup-content b{font-size:15px}
 .leaflet-popup-content button{margin-top:6px;border:0;background:none;padding:0;color:#B4485E;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.langs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex:none}
+.langs button{min-height:36px;min-width:44px;padding:6px 12px;border:0;border-radius:999px;background:none;font-weight:700;font-size:14px;color:var(--muted)}
+.langs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
 .card.flash{outline:3px solid var(--accent);outline-offset:2px;transition:outline-color 1.2s}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>Свои мастера</h1>
-    <p>Свои мастера рядом с вами. Выберите услугу и сразу увидите, где мастер принимает, сколько точно стоит каждая услуга и как записаться.</p>
+    <div class="titlebar">
+      <h1 data-i18n>Свои мастера</h1>
+      <div class="langs" role="group" aria-label="Язык / Мова">
+        <button type="button" data-lang="ru" lang="ru">RU</button>
+        <button type="button" data-lang="uk" lang="uk">UA</button>
+      </div>
+    </div>
+    <p data-i18n>Свои мастера рядом с вами. Выберите услугу и сразу увидите, где мастер принимает, сколько точно стоит каждая услуга и как записаться.</p>
   </header>
 
-  <div class="row"><span class="lbl">Город</span><div class="chips" id="cities"></div></div>
-  <div class="row"><span class="lbl">Услуга</span><div class="chips" id="services"></div></div>
-  <div class="row"><span class="lbl">Где принимает</span><div class="chips" id="places"></div></div>
-  <div class="row"><span class="lbl">Работа</span><div class="chips" id="jobs"></div></div>
+  <div class="row"><span class="lbl" data-i18n>Город</span><div class="chips" id="cities"></div></div>
+  <div class="row"><span class="lbl" data-i18n>Услуга</span><div class="chips" id="services"></div></div>
+  <div class="row"><span class="lbl" data-i18n>Где принимает</span><div class="chips" id="places"></div></div>
+  <div class="row"><span class="lbl" data-i18n>Работа</span><div class="chips" id="jobs"></div></div>
 
   <div class="view" role="group" aria-label="Как показать">
     <button type="button" id="vList" aria-pressed="true">☰ Список</button>
-    <button type="button" id="vMap" aria-pressed="false">🗺 Карта</button>
+    <button type="button" id="vMap" aria-pressed="false" data-i18n>🗺 Карта</button>
   </div>
   <div id="mapBox" hidden>
     <div id="map" role="region" aria-label="Карта мастеров"></div>
@@ -119,11 +129,11 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="list" id="list"></div>
 
   <div class="join">
-    <b>Вы мастер?</b>
-    <span>Добавьте свою карточку бесплатно: услуги, точные цены и где принимаете. Заполняется за 5 минут в Telegram.</span>
-    <a class="btn" id="botLink" href="https://t.me/" target="_blank" rel="noopener" hidden>Заполнить карточку</a>
+    <b data-i18n>Вы мастер?</b>
+    <span data-i18n>Добавьте свою карточку бесплатно: услуги, точные цены и где принимаете. Заполняется за 5 минут в Telegram.</span>
+    <a class="btn" id="botLink" href="https://t.me/" target="_blank" rel="noopener" hidden data-i18n>Заполнить карточку</a>
   </div>
-  <div class="foot">Botika · каталог «Свои мастера» · <a href="https://nasta11.github.io/">nasta11.github.io</a></div>
+  <div class="foot"><span data-i18n>Botika · каталог «Свои мастера»</span> · <a href="https://nasta11.github.io/">nasta11.github.io</a></div>
 </div>
 
 <script>
@@ -138,6 +148,63 @@ td small{display:block;color:var(--muted);font-size:13px}
     devices:"ультразвуковой скрабер, микротоки",cosmetics:"израильская профессиональная косметика",
     prices:[{name:"Ультразвуковая чистка лица",duration:"35 мин",price:3500,currency:"дин"},{name:"Комбинированная чистка",duration:"60 мин",price:4500,currency:"дин"},{name:"Массаж лица",duration:"30 мин",price:2500,currency:"дин"}],
     languages:"Русский, Українська",contact:"@primer",sample:true};
+  // Interface language: ?lang=uk|ru, then the last choice, then the browser.
+  // Data keys (cities, services, places) stay Russian; only what is shown is translated.
+  // Masters' own text (names, notes, prices) is shown as they wrote it.
+  var UK={
+    "Свои мастера":"Свої майстри",
+    "Свои мастера рядом с вами. Выберите услугу и сразу увидите, где мастер принимает, сколько точно стоит каждая услуга и как записаться.":"Свої майстри поруч із вами. Оберіть послугу й одразу побачите, де майстер приймає, скільки точно коштує кожна послуга і як записатися.",
+    "Город":"Місто","Услуга":"Послуга","Где принимает":"Де приймає","Работа":"Робота",
+    "🗺 Карта":"🗺 Мапа","Загружаю мастеров…":"Завантажую майстрів…",
+    "Вы мастер?":"Ви майстер?",
+    "Добавьте свою карточку бесплатно: услуги, точные цены и где принимаете. Заполняется за 5 минут в Telegram.":"Додайте свою картку безкоштовно: послуги, точні ціни та де приймаєте. Заповнюється за 5 хвилин у Telegram.",
+    "Заполнить карточку":"Заповнити картку","Botika · каталог «Свои мастера»":"Botika · каталог «Свої майстри»",
+    "Суботица":"Суботиця","Нови-Сад":"Нові-Сад","Белград":"Белград",
+    "Маникюр и педикюр":"Манікюр і педикюр","Брови и ресницы":"Брови та вії","Волосы":"Волосся","Массаж":"Масаж",
+    "Занятия и мастер-классы":"Заняття та майстер-класи","Мастер на час и ремонт":"Майстер на годину та ремонт",
+    "IT, сайты и дизайн":"IT, сайти та дизайн","Спорт и фитнес":"Спорт і фітнес","Репетиторы и языки":"Репетитори та мови",
+    "Переводы и документы":"Переклади та документи","Торты и домашняя еда":"Торти та домашня їжа","Уборка":"Прибирання",
+    "Животные и груминг":"Тварини та грумінг",
+    "Все":"Усі","Кабинет":"Кабінет","Студия / мастерская":"Студія / майстерня","Спортзал / фитнес-клуб":"Спортзал / фітнес-клуб",
+    "На дому":"Вдома","Выезжаю к клиенту":"Виїжджаю до клієнта","На улице / в парке":"На вулиці / в парку",
+    "Все мастера":"Усі майстри","💼 Ищут постоянную работу":"💼 Шукають постійну роботу",
+    "пример":"приклад","ищет работу":"шукає роботу","Чем работает":"Чим працює","Цены":"Ціни","Свернуть":"Згорнути",
+    "Все цены":"Усі ціни","запись:":"запис:","от":"від","Найдено:":"Знайдено:",
+    "Здесь пока никого нет":"Тут поки нікого немає",
+    "В этом городе по этой услуге мастеров ещё нет. Знаете хорошего мастера? Перешлите ему ссылку на эту страницу.":"У цьому місті з цієї послуги майстрів ще немає. Знаєте гарного майстра? Перешліть йому посилання на цю сторінку.",
+    "Каталог только открылся":"Каталог щойно відкрився",
+    "Мастера сейчас заполняют свои карточки. Вот как будет выглядеть карточка:":"Майстри зараз заповнюють свої картки. Ось як виглядатиме картка:",
+    "Карта не загрузилась. Проверьте интернет и обновите страницу.":"Мапа не завантажилася. Перевірте інтернет і оновіть сторінку.",
+    "Цены и запись ↓":"Ціни та запис ↓",
+    "Точки на карте пока нет ни у кого: эти мастера принимают на дому, выезжают или не отметили адрес. Карточки ниже.":"Точки на мапі поки немає ні в кого: ці майстри приймають удома, виїжджають або не позначили адресу. Картки нижче.",
+    "На карте:":"На мапі:","Ещё":"Ще",
+    "принимают на дому, выезжают или не отметили адрес, они в списке ниже.":"приймають удома, виїжджають або не позначили адресу, вони в списку нижче.",
+    "Нажмите на точку, чтобы увидеть, кто там принимает.":"Натисніть на точку, щоб побачити, хто там приймає.",
+    "Не получилось загрузить мастеров. Обновите страницу через минуту.":"Не вдалося завантажити майстрів. Оновіть сторінку за хвилину.",
+    "Свои мастера в Сербии · Botika":"Свої майстри в Сербії · Botika"
+  };
+  function pickLang(){
+    var q=(location.search.match(/[?&]lang=(uk|ru)\b/)||[])[1]; if(q) return q;
+    try{var saved=localStorage.getItem("lang"); if(saved==="uk"||saved==="ru") return saved;}catch(e){}
+    return /^uk\b/i.test(navigator.language||"")?"uk":"ru";
+  }
+  var LANG=pickLang();
+  function t(x){return LANG==="uk"&&UK[x]||x}
+  var STATIC=[].map.call(document.querySelectorAll("[data-i18n]"),function(el){return {el:el,ru:el.textContent.trim()}});
+  function applyLang(){
+    document.documentElement.lang=LANG;
+    document.title=t("Свои мастера в Сербии · Botika");
+    STATIC.forEach(function(x){x.el.textContent=t(x.ru)});
+    [].forEach.call(document.querySelectorAll("[data-lang]"),function(b){b.setAttribute("aria-pressed",String(b.getAttribute("data-lang")===LANG))});
+  }
+  [].forEach.call(document.querySelectorAll("[data-lang]"),function(b){
+    b.addEventListener("click",function(){
+      LANG=b.getAttribute("data-lang");
+      try{localStorage.setItem("lang",LANG)}catch(e){}
+      try{var u=new URL(location.href); if(LANG==="uk") u.searchParams.set("lang","uk"); else u.searchParams.delete("lang"); history.replaceState(null,"",u)}catch(e){}
+      applyLang(); render();
+    });
+  });
   var cards=[], city="Суботица", svc="Косметолог", place="Все", job="Все мастера", open={}, view="list";
   var JOB="💼 Ищут постоянную работу";
   var CENTER={"Суботица":[46.1003,19.6656],"Нови-Сад":[45.2671,19.8335],"Белград":[44.8125,20.4612]};
@@ -145,7 +212,7 @@ td small{display:block;color:var(--muted);font-size:13px}
 
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
   function num(v){return Number(v).toLocaleString("ru-RU").replace(/\u00a0/g," ")}
-  function fmt(p){var a=p.priceTo?num(p.price)+"–"+num(p.priceTo):(p.from?"от ":"")+num(p.price);return a+" "+(p.currency==="€"?"€":"дин")}
+  function fmt(p){var a=p.priceTo?num(p.price)+"–"+num(p.priceTo):(p.from?t("от")+" ":"")+num(p.price);return a+" "+(p.currency==="€"?"€":"дин")}
   function contactLink(c){
     c=String(c||"").trim();
     var m=c.match(/^@([A-Za-z0-9_]{4,32})$/);
@@ -165,7 +232,7 @@ td small{display:block;color:var(--muted);font-size:13px}
     var box=document.getElementById(id); box.textContent="";
     arr.forEach(function(v){
       var n=count?count(v):null;
-      var b=document.createElement("button"); b.type="button"; b.textContent=(ICON[v]?ICON[v]+" ":"")+v+(n?" · "+n:""); b.setAttribute("aria-pressed",String(v===cur));
+      var b=document.createElement("button"); b.type="button"; b.textContent=(ICON[v]?ICON[v]+" ":"")+t(v)+(n?" · "+n:""); b.setAttribute("aria-pressed",String(v===cur));
       if(n===0&&v!==cur) b.className="empty";
       b.addEventListener("click",function(){set(v);render()}); box.appendChild(b);
     });
@@ -176,12 +243,12 @@ td small{display:block;color:var(--muted);font-size:13px}
     var uses=String(m.devices||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="dev">'+esc(x)+'</span>'}).join("")+
              String(m.cosmetics||"").split(",").map(function(x){return x.trim()}).filter(Boolean).map(function(x){return '<span class="cos">'+esc(x)+'</span>'}).join("");
     el.innerHTML=
-      '<div class="top"><div class="ava" style="background:'+PAL[i%PAL.length]+'">'+esc((m.name||"?").charAt(0))+'</div><div class="who"><b>'+esc(m.name)+'</b><span>'+esc(m.service)+' · '+esc(m.city)+'</span></div>'+(m.sample?'<span class="tag">пример</span>':'')+(m.seeksJob?'<span class="tag job">ищет работу</span>':'')+'</div>'+
-      '<div class="place"><span class="ic" aria-hidden="true">'+(ICON[m.place]||"📍")+'</span><div><b>'+esc(m.place)+'</b><span>'+esc(m.placeNote)+'</span></div></div>'+
-      (uses?'<div class="block"><span class="bh">Чем работает</span><div class="uses">'+uses+'</div></div>':'')+
-      '<div class="block"><span class="bh">Цены</span><table>'+shown.map(function(r){return '<tr><td>'+esc(r.name)+(r.duration?'<small>'+esc(r.duration)+'</small>':'')+'</td><td class="p">'+fmt(r)+'</td></tr>'}).join("")+'</table>'+
-      (m.prices.length>3?'<button type="button" class="more">'+(open[key]?'Свернуть':'Все цены ('+m.prices.length+')')+'</button>':'')+'</div>'+
-      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>запись: '+(m.sample?esc(m.contact):contactLink(m.contact))+'</span></div>';
+      '<div class="top"><div class="ava" style="background:'+PAL[i%PAL.length]+'">'+esc((m.name||"?").charAt(0))+'</div><div class="who"><b>'+esc(m.name)+'</b><span>'+esc(t(m.service))+' · '+esc(t(m.city))+'</span></div>'+(m.sample?'<span class="tag">'+t("пример")+'</span>':'')+(m.seeksJob?'<span class="tag job">'+t("ищет работу")+'</span>':'')+'</div>'+
+      '<div class="place"><span class="ic" aria-hidden="true">'+(ICON[m.place]||"📍")+'</span><div><b>'+esc(t(m.place))+'</b><span>'+esc(m.placeNote)+'</span></div></div>'+
+      (uses?'<div class="block"><span class="bh">'+t("Чем работает")+'</span><div class="uses">'+uses+'</div></div>':'')+
+      '<div class="block"><span class="bh">'+t("Цены")+'</span><table>'+shown.map(function(r){return '<tr><td>'+esc(r.name)+(r.duration?'<small>'+esc(r.duration)+'</small>':'')+'</td><td class="p">'+fmt(r)+'</td></tr>'}).join("")+'</table>'+
+      (m.prices.length>3?'<button type="button" class="more">'+(open[key]?t('Свернуть'):t('Все цены')+' ('+m.prices.length+')')+'</button>':'')+'</div>'+
+      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>'+t("запись:")+' '+(m.sample?esc(m.contact):contactLink(m.contact))+'</span></div>';
     var mb=el.querySelector(".more"); if(mb) mb.addEventListener("click",function(){open[key]=!open[key];render()});
     return el;
   }
@@ -208,12 +275,12 @@ td small{display:block;color:var(--muted);font-size:13px}
     if(view==="map") drawMap(found);
     var list=document.getElementById("list"); list.textContent="";
     var count=document.getElementById("count");
-    if(found.length){ count.textContent="Найдено: "+found.length; found.forEach(function(m,i){list.appendChild(card(m,i))}); return; }
+    if(found.length){ count.textContent=t("Найдено:")+" "+found.length; found.forEach(function(m,i){list.appendChild(card(m,i))}); return; }
     count.textContent="";
     var e=document.createElement("div"); e.className="state";
     e.innerHTML=cards.length
-      ?'<b>Здесь пока никого нет</b><span>В этом городе по этой услуге мастеров ещё нет. Знаете хорошего мастера? Перешлите ему ссылку на эту страницу.</span>'
-      :'<b>Каталог только открылся</b><span>Мастера сейчас заполняют свои карточки. Вот как будет выглядеть карточка:</span>';
+      ?'<b>'+t('Здесь пока никого нет')+'</b><span>'+t('В этом городе по этой услуге мастеров ещё нет. Знаете хорошего мастера? Перешлите ему ссылку на эту страницу.')+'</span>'
+      :'<b>'+t('Каталог только открылся')+'</b><span>'+t('Мастера сейчас заполняют свои карточки. Вот как будет выглядеть карточка:')+'</span>';
     list.appendChild(e);
     if(!cards.length) list.appendChild(card(SAMPLE,0));
   }
@@ -224,7 +291,7 @@ td small{display:block;color:var(--muted);font-size:13px}
     var css=document.createElement("link"); css.rel="stylesheet"; css.href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"; document.head.appendChild(css);
     var js=document.createElement("script"); js.src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
     js.onload=function(){leafletLoading=false;done()};
-    js.onerror=function(){leafletLoading=false;document.getElementById("mapHint").textContent="Карта не загрузилась. Проверьте интернет и обновите страницу."};
+    js.onerror=function(){leafletLoading=false;document.getElementById("mapHint").textContent=t("Карта не загрузилась. Проверьте интернет и обновите страницу.")};
     document.head.appendChild(js);
   }
   function drawMap(found){
@@ -240,8 +307,8 @@ td small{display:block;color:var(--muted);font-size:13px}
     pts.forEach(function(m){
       var mk=L.circleMarker([m.lat,m.lon],{radius:11,color:"#fff",weight:3,fillColor:accent,fillOpacity:1}).addTo(layer);
       var box=document.createElement("div");
-      box.innerHTML='<b>'+esc(m.name)+'</b><br>'+esc(m.service)+'<br>'+(ICON[m.place]||"📍")+' '+esc(m.place)+(m.placeNote?'<br><span style="color:#73655F">'+esc(m.placeNote)+'</span>':'')+
-        '<br><a href="https://www.google.com/maps/dir/?api=1&destination='+m.lat+','+m.lon+'" target="_blank" rel="noopener">Маршрут ↗</a><br><button type="button">Цены и запись ↓</button>';
+      box.innerHTML='<b>'+esc(m.name)+'</b><br>'+esc(t(m.service))+'<br>'+(ICON[m.place]||"📍")+' '+esc(t(m.place))+(m.placeNote?'<br><span style="color:#73655F">'+esc(m.placeNote)+'</span>':'')+
+        '<br><a href="https://www.google.com/maps/dir/?api=1&destination='+m.lat+','+m.lon+'" target="_blank" rel="noopener">Маршрут ↗</a><br><button type="button">'+t('Цены и запись ↓')+'</button>';
       box.querySelector("button").addEventListener("click",function(){
         var c=document.getElementById("m-"+m.id); if(!c) return;
         c.scrollIntoView({behavior:"smooth",block:"start"}); c.classList.add("flash"); setTimeout(function(){c.classList.remove("flash")},1600);
@@ -253,9 +320,11 @@ td small{display:block;color:var(--muted);font-size:13px}
     else map.setView(CENTER[city]||CENTER["Суботица"],13);
     var off=found.length-pts.length, hint=document.getElementById("mapHint");
     if(!found.length) hint.textContent="";
-    else if(!pts.length) hint.textContent="Точки на карте пока нет ни у кого: эти мастера принимают на дому, выезжают или не отметили адрес. Карточки ниже.";
-    else hint.textContent="На карте: "+pts.length+(off?". Ещё "+off+" принимают на дому, выезжают или не отметили адрес, они в списке ниже.":". Нажмите на точку, чтобы увидеть, кто там принимает.");
+    else if(!pts.length) hint.textContent=t("Точки на карте пока нет ни у кого: эти мастера принимают на дому, выезжают или не отметили адрес. Карточки ниже.");
+    else hint.textContent=t("На карте:")+" "+pts.length+(off?". "+t("Ещё")+" "+off+" "+t("принимают на дому, выезжают или не отметили адрес, они в списке ниже."):". "+t("Нажмите на точку, чтобы увидеть, кто там принимает."));
   }
+  applyLang();
+  document.getElementById("count").textContent=t("Загружаю мастеров…");
   document.getElementById("vList").addEventListener("click",function(){view="list";render()});
   document.getElementById("vMap").addEventListener("click",function(){view="map";render()});
   render();
@@ -265,7 +334,7 @@ td small{display:block;color:var(--muted);font-size:13px}
     if(cards.length && !cards.some(function(c){return c.city===city&&c.service===svc})){city=cards[0].city; svc=cards[0].service;}
     render();
   }).catch(function(){
-    document.getElementById("count").textContent="Не получилось загрузить мастеров. Обновите страницу через минуту.";
+    document.getElementById("count").textContent=t("Не получилось загрузить мастеров. Обновите страницу через минуту.");
   });
 })();
 </script>
