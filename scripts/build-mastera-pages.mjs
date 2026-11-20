@@ -89,7 +89,8 @@ function pageHtml({ city, service, cards, path, others }) {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${SITE}/og.jpg">
+<meta property="og:image" content="${SITE}/mastera/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
   { "@type": "ListItem", position: 1, name: "Свои мастера", item: `${SITE}/mastera/` },
   { "@type": "ListItem", position: 2, name: city },
