@@ -72,7 +72,16 @@ function pageHtml({ city, service, cards, path, others }) {
   const h1 = title(service, city);
   const from = cheapest(cards);
   const names = cards.map((m) => m.name).filter(Boolean).slice(0, 3).join(", ");
-  const description = `${h1}: ${cards.length} ${plural(cards.length)}${from ? `, цены ${from}` : ""}. ${names}. Где принимают, точные цены и как записаться.`.slice(0, 300);
+  // What people actually type into Google is the dish or the procedure ("пельмени", "педикюр"),
+  // so the first price lines go into the description too.
+  const seen = new Set();
+  const what = cards
+    .flatMap((m) => (m.prices || []).map((p) => (p.name || "").trim()))
+    .filter((name) => name && name.length <= 40 && !seen.has(name.toLowerCase()) && seen.add(name.toLowerCase()))
+    .slice(0, 6)
+    .map((name, i) => (i === 0 ? name : name.charAt(0).toLowerCase() + name.slice(1)))
+    .join(", ");
+  const description = `${h1}: ${cards.length} ${plural(cards.length)}${from ? `, цены ${from}` : ""}.${what ? ` ${what}.` : ""} ${names}. Где принимают, точные цены и как записаться.`.slice(0, 300);
   const url = `${SITE}${path}`;
   const catalog = `/mastera/?city=${encodeURIComponent(city)}&svc=${encodeURIComponent(service)}`;
   return `<!doctype html>
