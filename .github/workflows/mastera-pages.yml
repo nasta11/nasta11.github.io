@@ -1,0 +1,37 @@
+# Rebuilds the city + service pages of «Свои мастера» (/mastera/<city>/<service>/)
+# from the live catalog, so a newly approved master appears there within an hour.
+name: Свои мастера: страницы для Google
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/build-mastera-pages.mjs
+      - .github/workflows/mastera-pages.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mastera-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/build-mastera-pages.mjs
+      - name: Publish changes
+        run: |
+          git add -A mastera sitemap.xml
+          if git diff --cached --quiet; then echo "Nothing changed"; exit 0; fi
+          git -c user.name="Catin Hat" -c user.email="109822733+nasta11@users.noreply.github.com" commit -m "Свои мастера: страницы городов и услуг"
+          git pull --rebase origin main
+          git push origin HEAD:main

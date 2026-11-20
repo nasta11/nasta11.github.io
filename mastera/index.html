@@ -133,6 +133,7 @@ td small{display:block;color:var(--muted);font-size:13px}
     <span data-i18n>Добавьте свою карточку бесплатно: услуги, точные цены и где принимаете. Заполняется за 5 минут в Telegram.</span>
     <a class="btn" id="botLink" href="https://t.me/" target="_blank" rel="noopener" hidden data-i18n>Заполнить карточку</a>
   </div>
+  <!-- seo-links:start --><!-- seo-links:end -->
   <div class="foot"><span data-i18n>Botika · каталог «Свои мастера»</span> · <a href="https://nasta11.github.io/">nasta11.github.io</a></div>
 </div>
 
@@ -331,6 +332,9 @@ td small{display:block;color:var(--muted);font-size:13px}
   fetch(API).then(function(r){if(!r.ok) throw new Error(r.status); return r.json()}).then(function(data){
     cards=(data.cards||[]).map(function(c){c.prices=Array.isArray(c.prices)?c.prices:[];return c});
     if(data.bot){var a=document.getElementById("botLink"); a.href=data.bot; a.hidden=false;}
+    // ?city=…&svc=… (links from the city and service pages) opens that pair.
+    try{var qs=new URLSearchParams(location.search), qc=qs.get("city"), qv=qs.get("svc");
+      if(qc&&qv&&cards.some(function(c){return c.city===qc&&c.service===qv})){city=qc; svc=qv;}}catch(e){}
     if(cards.length && !cards.some(function(c){return c.city===city&&c.service===svc})){city=cards[0].city; svc=cards[0].service;}
     render();
   }).catch(function(){
