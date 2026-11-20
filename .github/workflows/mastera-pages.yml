@@ -1,6 +1,6 @@
 # Rebuilds the city + service pages of «Свои мастера» (/mastera/<city>/<service>/)
 # from the live catalog, so a newly approved master appears there within an hour.
-name: Свои мастера: страницы для Google
+name: "Свои мастера — страницы для Google"
 
 on:
   schedule:
