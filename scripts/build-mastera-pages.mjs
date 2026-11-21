@@ -357,7 +357,9 @@ async function main() {
   // A stable address for every master: /mastera/m/<name>-<city>/ (namesakes get -2, -3 by id).
   const used = new Set();
   for (const c of [...cards].sort((a, b) => String(a.id ?? "").localeCompare(String(b.id ?? "")))) {
-    const base = `${slug(c.name)}-${slug(c.city)}`;
+    // "Дмитрий барбер Белград" already names the city: no "-belgrad-belgrad".
+    const name = slug(c.name), city = slug(c.city);
+    const base = `-${name}-`.includes(`-${city}-`) ? name : `${name}-${city}`;
     let s = base, n = 2;
     while (used.has(s)) s = `${base}-${n++}`;
     used.add(s);
