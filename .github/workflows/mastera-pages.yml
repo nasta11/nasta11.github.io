@@ -30,7 +30,7 @@ jobs:
       - run: node scripts/build-mastera-pages.mjs
       - name: Publish changes
         run: |
-          git add -A mastera sitemap.xml
+          git add -A mastera sitemap.xml llms.txt
           if git diff --cached --quiet; then echo "Nothing changed"; exit 0; fi
           git -c user.name="Catin Hat" -c user.email="109822733+nasta11@users.noreply.github.com" commit -m "Свои мастера: страницы городов и услуг"
           git pull --rebase origin main

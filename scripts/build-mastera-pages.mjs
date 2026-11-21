@@ -113,7 +113,7 @@ function pageHtml({ city, service, cards, path, others }) {
 <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
   { "@type": "ListItem", position: 1, name: "Свои мастера", item: `${SITE}/mastera/` },
   // Google wants an "item" link on every step but the last: the city step opens the catalog on that city.
-  { "@type": "ListItem", position: 2, name: city, item: `${SITE}/mastera/?city=${encodeURIComponent(city)}` },
+  { "@type": "ListItem", position: 2, name: city, item: `${SITE}/mastera/${slug(city)}/` },
   { "@type": "ListItem", position: 3, name: service, item: url },
 ] }).replace(/</g, "\\u003c")}</script>
 <style>
@@ -155,7 +155,7 @@ td small{display:block;color:var(--muted);font-size:13px}
 </head>
 <body>
 <div class="wrap">
-  <nav class="crumbs"><a href="/mastera/">Свои мастера</a> › ${esc(city)} › ${esc(service)}</nav>
+  <nav class="crumbs"><a href="/mastera/">Свои мастера</a> › <a href="/mastera/${slug(city)}/">${esc(city)}</a> › ${esc(service)}</nav>
   <h1>${esc(h1)}</h1>
   <p class="lead">${cards.length} ${plural(cards.length)}${from ? ` · цены ${from}` : ""}. Где принимают, точные цены и как записаться.</p>
   ${cards.map(cardHtml).join("\n  ")}
@@ -357,6 +357,176 @@ document.addEventListener("click", function (e) {
 `;
 }
 
+// ---------------------------------------------------------------------------
+// Answer pages: one per city (/mastera/<city>/) and «О проекте» (/mastera/o-proekte/),
+// plus /llms.txt. Search engines and AI answers quote pages that answer a question
+// directly ("где найти мастера в Нови-Саде, сколько стоит, как записаться"), so these
+// pages say it in plain sentences, built from the live catalog.
+
+const cityIn = (city) => (CITY_IN[city] ? `в ${CITY_IN[city]}` : `— ${city}`);
+const lower1 = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+const LANG_NAMES = (cards) => {
+  const seen = new Map();
+  for (const m of cards) for (const l of String(m.languages || "").split(/[,;]/).map((x) => x.trim()).filter(Boolean)) {
+    const key = l.toLowerCase();
+    if (!seen.has(key)) seen.set(key, l);
+  }
+  return [...seen.values()];
+};
+
+function shell({ title: pageTitle, h1, description, path, ld, crumbs, body }) {
+  const url = `${SITE}${path}`;
+  return `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- ${MARK}: do not edit by hand, the page is rebuilt from the catalog data -->
+<title>${esc(pageTitle)}</title>
+<meta name="description" content="${esc(description)}">
+<link rel="canonical" href="${url}">
+<meta property="og:site_name" content="Botika">
+<meta property="og:title" content="${esc(h1)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${url}">
+<meta property="og:image" content="${SITE}/mastera/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+${ld.map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, "\\u003c")}</script>`).join("\n")}
+<style>
+:root{--bg:#F6F1EC;--surface:#FFFFFF;--ink:#2A1F1C;--muted:#73655F;--line:#E6DCD4;--accent:#B4485E;--mint:#0B6E5B;--mint-soft:#E1F0EA}
+@media (prefers-color-scheme: dark){:root{--bg:#1A1514;--surface:#241D1B;--ink:#F3EAE6;--muted:#B4A59F;--line:#3A2F2C;--accent:#E87F93;--mint:#55CFB2;--mint-soft:#1E302A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 56px;display:flex;flex-direction:column;gap:18px}
+a{color:var(--accent)}
+nav.crumbs{font-size:14px;color:var(--muted)}
+h1{font-size:clamp(26px,7vw,34px);line-height:1.15;margin:0}
+h2{font-size:20px;margin:0}
+p{margin:0}
+.lead{font-size:17px}
+section{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px}
+section ul{margin:0;padding-left:18px}
+section li{margin:4px 0}
+.muted{color:var(--muted);font-size:14px}
+.join{background:var(--mint);color:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.join a{color:#fff;font-weight:700}
+.cta{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:10px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none}
+.more{font-size:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="crumbs">${crumbs}</nav>
+  <h1>${esc(h1)}</h1>
+  ${body}
+  <div class="join"><b>Вы мастер?</b><span>Добавьте себя бесплатно, это 5 минут в Telegram: <a href="https://t.me/svoi_mastera_bot">@svoi_mastera_bot</a>. Вы получите свою страницу с прайсом, адресом, фото работ и кнопкой записи.</span></div>
+  <div class="more"><a href="/mastera/o-proekte/">О проекте</a> · Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
+</div>
+<script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>
+`;
+}
+
+function cityPageHtml(city, pages, allCities) {
+  const cards = pages.flatMap((p) => p.cards);
+  const path = `/mastera/${slug(city)}/`;
+  const services = pages.map((p) => p.service);
+  const langs = LANG_NAMES(cards);
+  const from = cheapest(cards);
+  const h1 = `Мастера ${cityIn(city)}: цены, адреса и запись`;
+  const servicesText = services.map(lower1).join(", ");
+  const answer = `Сейчас в каталоге «Свои мастера» ${cards.length} ${plural(cards.length)} ${cityIn(city)}: ${servicesText}. ` +
+    `У каждого мастера указаны точные цены на каждую услугу, где он принимает (салон, на дому, выезд или онлайн) и как записаться — одной кнопкой в Telegram, WhatsApp или Viber, без посредников и комиссий.`;
+  const description = `${cards.length} ${plural(cards.length)} ${cityIn(city)}: ${servicesText}.${from ? ` Цены ${from}.` : ""} Точный прайс, адрес и запись в один клик.`.slice(0, 300);
+
+  const blocks = pages.map((p) => {
+    const f = cheapest(p.cards);
+    return `<section><h2><a href="${p.path}">${esc(p.service)}</a></h2>
+    <p class="muted">${p.cards.length} ${plural(p.cards.length)}${f ? ` · цены ${f}` : ""}</p>
+    <ul>${p.cards.map((m) => {
+      const mf = cheapest([m]);
+      return `<li><a href="${m.path}">${esc(m.name)}</a>${m.place ? ` — ${esc(lower1(m.place))}` : ""}${mf ? `, ${mf}` : ""}</li>`;
+    }).join("")}</ul></section>`;
+  }).join("\n  ");
+
+  const faq = [
+    [`Как найти мастера ${cityIn(city)}?`, `Откройте нужную услугу ниже или <a href="/mastera/?city=${encodeURIComponent(city)}">каталог с фильтрами и картой</a>. Выберите мастера по цене и месту приёма и нажмите «Записаться»: откроется чат с мастером.`],
+    [`Сколько стоят услуги мастеров ${cityIn(city)}?`, `Цены указывают сами мастера, по каждой процедуре отдельно${from ? `; самые доступные — ${from}` : ""}. Точный прайс есть на странице каждого мастера.`],
+    ...(langs.length ? [[`На каких языках говорят мастера?`, `Язык указан в карточке каждого мастера. Сейчас ${cityIn(city)}: ${langs.map(esc).join(", ")}.`]] : []),
+    [`Каталог платный?`, `Нет. Искать мастеров и записываться бесплатно, мастера тоже добавляются бесплатно. Каталог не берёт комиссию и не участвует в оплате.`],
+  ];
+
+  const others = allCities.filter((c) => c !== city);
+  const body = `<p class="lead">${esc(answer)}</p>
+  <a class="cta" href="/mastera/?city=${encodeURIComponent(city)}">Каталог ${esc(cityIn(city))} с картой →</a>
+  ${blocks}
+  <section><h2>Вопросы и ответы</h2>${faq.map(([q, a]) => `<p><b>${esc(q)}</b><br>${a}</p>`).join("")}</section>
+  ${others.length ? `<p class="more">Другие города: ${others.map((c) => `<a href="/mastera/${slug(c)}/">${esc(c)}</a>`).join(" · ")}</p>` : ""}`;
+
+  const ld = [
+    { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Свои мастера", item: `${SITE}/mastera/` },
+      { "@type": "ListItem", position: 2, name: city, item: `${SITE}${path}` },
+    ] },
+    { "@context": "https://schema.org", "@type": "ItemList", name: h1, numberOfItems: cards.length,
+      itemListElement: cards.map((m, i) => ({ "@type": "ListItem", position: i + 1, name: m.name, url: `${SITE}${m.path}` })) },
+    { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({
+      "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a.replace(/<[^>]+>/g, "") } })) },
+  ];
+  return { path, html: shell({ title: `${h1} · Свои мастера`, h1, description, path, ld, crumbs: `<a href="/mastera/">Свои мастера</a> › ${esc(city)}`, body }) };
+}
+
+function aboutPageHtml(cards, cities, pages) {
+  const path = "/mastera/o-proekte/";
+  const h1 = "О проекте «Свои мастера»";
+  const services = [...new Set(pages.map((p) => p.service))];
+  const description = `«Свои мастера» — бесплатный каталог мастеров в Сербии: ${cities.join(", ")}. Точные цены, адрес и запись в один клик. Сейчас ${cards.length} ${plural(cards.length)}.`;
+  const body = `<p class="lead">«Свои мастера» — бесплатный каталог мастеров и специалистов в Сербии от Botika. Он помогает своим находить своих: клиент сразу видит, <b>сколько точно стоит</b> каждая услуга, <b>где принимает</b> мастер и <b>как записаться</b>.</p>
+  <section><h2>Что есть в каталоге сейчас</h2>
+    <p>${cards.length} ${plural(cards.length)} в городах: ${cities.map((c) => `<a href="/mastera/${slug(c)}/">${esc(c)}</a>`).join(", ")}.</p>
+    <p>Услуги: ${services.map((s) => esc(lower1(s))).join(", ")}.</p></section>
+  <section><h2>Для клиентов</h2><ul>
+    <li>Точный прайс по каждой процедуре, а не «цена по договорённости».</li>
+    <li>Где принимает мастер: салон, кабинет, на дому, выезд или онлайн; адрес и карта.</li>
+    <li>Запись одной кнопкой: открывается Telegram, WhatsApp или Viber мастера. Без регистрации, посредников и комиссий.</li>
+    <li>Фото работ и язык, на котором говорит мастер.</li></ul></section>
+  <section><h2>Для мастеров</h2><ul>
+    <li>Бесплатно. Карточка заполняется за 5 минут в Telegram-боте <a href="https://t.me/svoi_mastera_bot">@svoi_mastera_bot</a>, документы не нужны.</li>
+    <li>Своя страница с прайсом, адресом, фото работ и кнопкой записи — ссылку можно поставить в Instagram.</li>
+    <li>Можно отметить, что ищете постоянную работу: салоны и семьи найдут вас по фильтру.</li>
+    <li>Цены и фото можно менять в любой момент, карточку можно удалить.</li></ul></section>
+  <section><h2>Как это устроено</h2>
+    <p>Каталог не берёт комиссию и не участвует в оплате: клиент договаривается с мастером напрямую. Новые карточки проверяются перед публикацией. Страницы мастеров и городов обновляются автоматически.</p></section>
+  <a class="cta" href="/mastera/">Открыть каталог →</a>`;
+  const ld = [
+    { "@context": "https://schema.org", "@type": "WebSite", name: "Свои мастера", alternateName: "Botika · Свои мастера", url: `${SITE}/mastera/`, inLanguage: ["ru", "uk"],
+      description, publisher: { "@type": "Organization", name: "Botika", url: `${SITE}/` } },
+    { "@context": "https://schema.org", "@type": "AboutPage", name: h1, url: `${SITE}${path}` },
+  ];
+  return { path, html: shell({ title: `${h1} · Botika`, h1, description, path, ld, crumbs: `<a href="/mastera/">Свои мастера</a> › О проекте`, body }) };
+}
+
+function llmsTxt(cards, cities, pages) {
+  return `# Свои мастера (Botika)
+
+> Бесплатный каталог мастеров и специалистов в Сербии: ${cities.join(", ")}. У каждого мастера — точные цены на каждую услугу, где он принимает, фото работ и запись в один клик (Telegram, WhatsApp, Viber). Без комиссий. Сейчас ${cards.length} ${plural(cards.length)}.
+
+Мастера добавляются бесплатно через Telegram-бота https://t.me/svoi_mastera_bot. Каталог обновляется автоматически.
+
+## Главное
+- [Каталог с фильтрами и картой](${SITE}/mastera/)
+- [О проекте](${SITE}/mastera/o-proekte/)
+
+## Города
+${cities.map((c) => { const n = pages.filter((p) => p.city === c).reduce((a, p) => a + p.cards.length, 0); return `- [Мастера ${cityIn(c)}](${SITE}/mastera/${slug(c)}/): ${n} ${plural(n)}`; }).join("\n")}
+
+## Услуги по городам
+${pages.map((p) => `- [${title(p.service, p.city)}](${SITE}${p.path}): ${p.cards.length} ${plural(p.cards.length)}${cheapest(p.cards) ? `, цены ${cheapest(p.cards)}` : ""}`).join("\n")}
+`;
+}
+
 // Pages this script made earlier (it only ever deletes its own).
 function oldPages(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -412,6 +582,17 @@ async function main() {
       writeFileSync(join(dir, "index.html"), masterPageHtml(m, i, { categoryPath: p.path, neighbours }));
     });
   }
+  // City answer pages, «О проекте» and llms.txt.
+  const cities = [...new Set(pages.map((p) => p.city))].sort((a, b) => pages.filter((p) => p.city === b).length - pages.filter((p) => p.city === a).length);
+  const extra = [];
+  for (const city of cities) extra.push(cityPageHtml(city, pages.filter((p) => p.city === city), cities));
+  extra.push(aboutPageHtml(cards, cities, pages));
+  for (const page of extra) {
+    mkdirSync(join(ROOT, page.path), { recursive: true });
+    writeFileSync(join(ROOT, page.path, "index.html"), page.html);
+  }
+  writeFileSync(join(ROOT, "llms.txt"), llmsTxt(cards, cities, pages));
+
   // id → page address, so the main catalog can link each card to its page.
   const paths = Object.fromEntries(cards.filter((c) => c.id != null).map((c) => [String(c.id), c.path]));
   mkdirSync(join(MASTERA, "m"), { recursive: true });
@@ -420,13 +601,14 @@ async function main() {
   // Links from the catalog page, so search engines find the pages there too.
   const indexPath = join(MASTERA, "index.html");
   const index = readFileSync(indexPath, "utf8");
-  const links = pages.map((p) => `<a href="${p.path}">${esc(title(p.service, p.city))}</a>`).join(" · ");
+  const links = [...cities.map((c) => `<a href="/mastera/${slug(c)}/">Мастера ${esc(cityIn(c))}</a>`),
+    ...pages.map((p) => `<a href="${p.path}">${esc(title(p.service, p.city))}</a>`), `<a href="/mastera/o-proekte/">О проекте</a>`].join(" · ");
   const block = `<!-- seo-links:start -->${pages.length ? `<nav class="foot" aria-label="Мастера по городам">${links}</nav>` : ""}<!-- seo-links:end -->`;
   writeFileSync(indexPath, index.replace(/<!-- seo-links:start -->[\s\S]*?<!-- seo-links:end -->/, block));
 
   // Sitemap: the three main pages plus one line per generated page. No dates,
   // so a run that changes nothing leaves the file (and the repository) as it was.
-  const urls = ["/", "/mastera/", "/radar/", ...pages.map((p) => p.path), ...cards.map((c) => c.path)];
+  const urls = ["/", "/mastera/", "/radar/", ...extra.map((e) => e.path), ...pages.map((p) => p.path), ...cards.map((c) => c.path)];
   writeFileSync(join(ROOT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join("\n")}
