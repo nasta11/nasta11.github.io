@@ -259,7 +259,7 @@ td small{display:block;color:var(--muted);font-size:13px}
       (uses?'<div class="block"><span class="bh">'+t("Чем работает")+'</span><div class="uses">'+uses+'</div></div>':'')+
       '<div class="block"><span class="bh">'+t("Цены")+'</span><table>'+shown.map(function(r){return '<tr><td>'+esc(r.name)+(r.duration?'<small>'+esc(r.duration)+'</small>':'')+'</td><td class="p">'+fmt(r)+'</td></tr>'}).join("")+'</table>'+
       (m.prices.length>3?'<button type="button" class="more">'+(open[key]?t('Свернуть'):t('Все цены')+' ('+m.prices.length+')')+'</button>':'')+'</div>'+
-      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>'+t("запись:")+' '+(m.sample?esc(m.contact):contactLink(m.contact))+'</span></div>'+
+      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>'+t("запись:")+' '+(m.sample?esc(m.contact):contactLink(m.contact).replace(/^<a /,'<a data-zapis="'+esc(m.name)+'" '))+'</span></div>'+
       (m.id&&PATHS[m.id]?'<a class="pagelink" href="'+esc(PATHS[m.id])+'">'+t("Страница мастера →")+'</a>':'');
     var mb=el.querySelector(".more"); if(mb) mb.addEventListener("click",function(){open[key]=!open[key];render()});
     return el;
@@ -355,6 +355,14 @@ td small{display:block;color:var(--muted);font-size:13px}
 })();
 </script>
 <!-- Visit statistics: GoatCounter, no cookies. https://botika.goatcounter.com -->
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
+});
+</script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
