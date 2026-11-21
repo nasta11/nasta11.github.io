@@ -1,0 +1,32 @@
+# Свои мастера (Botika)
+
+> Бесплатный каталог мастеров и специалистов в Сербии: Суботица, Нови-Сад, Белград, Becej, Backo Petrovo Selo. У каждого мастера — точные цены на каждую услугу, где он принимает, фото работ и запись в один клик (Telegram, WhatsApp, Viber). Без комиссий. Сейчас 16 мастеров.
+
+Мастера добавляются бесплатно через Telegram-бота https://t.me/svoi_mastera_bot. Каталог обновляется автоматически.
+
+## Главное
+- [Каталог с фильтрами и картой](https://nasta11.github.io/mastera/)
+- [О проекте](https://nasta11.github.io/mastera/o-proekte/)
+
+## Города
+- [Мастера в Суботице](https://nasta11.github.io/mastera/subotitsa/): 8 мастеров
+- [Мастера в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/): 4 мастера
+- [Мастера в Белграде](https://nasta11.github.io/mastera/belgrad/): 3 мастера
+- [Мастера — Becej, Backo Petrovo Selo](https://nasta11.github.io/mastera/becej-backo-petrovo-selo/): 1 мастер
+
+## Услуги по городам
+- [Маникюр и педикюр, Becej, Backo Petrovo Selo](https://nasta11.github.io/mastera/becej-backo-petrovo-selo/manikyur-i-pedikyur/): 1 мастер, цены от 1 500 дин
+- [Брови и ресницы в Белграде](https://nasta11.github.io/mastera/belgrad/brovi-i-resnitsy/): 2 мастера, цены от 4 000 дин
+- [Волосы в Белграде](https://nasta11.github.io/mastera/belgrad/volosy/): 1 мастер, цены от 1 000 дин
+- [Брови и ресницы в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/brovi-i-resnitsy/): 1 мастер, цены от 1 000 дин
+- [Косметолог в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/kosmetolog/): 1 мастер, цены от 8 000 дин
+- [Массаж в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/massazh/): 1 мастер, цены от 3 800 дин
+- [Волосы в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/volosy/): 1 мастер, цены от 4 000 дин
+- [Домашняя еда и полуфабрикаты в Суботице](https://nasta11.github.io/mastera/subotitsa/domashnyaya-eda-i-polufabrikaty/): 1 мастер, цены от 100 дин
+- [IT, сайты и дизайн в Суботице](https://nasta11.github.io/mastera/subotitsa/it-sayty-i-dizayn/): 1 мастер, цены от 10 €
+- [Маникюр и педикюр в Суботице](https://nasta11.github.io/mastera/subotitsa/manikyur-i-pedikyur/): 1 мастер, цены от 1 500 дин
+- [Репетиторы и языки в Суботице](https://nasta11.github.io/mastera/subotitsa/repetitory-i-yazyki/): 1 мастер, цены от 1 000 дин
+- [Спорт и фитнес в Суботице](https://nasta11.github.io/mastera/subotitsa/sport-i-fitnes/): 1 мастер, цены от 2 000 дин
+- [Тату и пирсинг в Суботице](https://nasta11.github.io/mastera/subotitsa/tatu-i-pirsing/): 1 мастер, цены от 2 000 дин
+- [Занятия и мастер-классы в Суботице](https://nasta11.github.io/mastera/subotitsa/zanyatiya-i-master-klassy/): 1 мастер, цены от 1 200 дин
+- [Животные и груминг в Суботице](https://nasta11.github.io/mastera/subotitsa/zhivotnye-i-gruming/): 1 мастер, цены от 800 дин
