@@ -142,7 +142,7 @@ ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
     <h2 id="s2"><span class="step">2</span>Откройте запрос и ответьте людям</h2>
     <p class="hint">Нажмите на фразу: поиск Threads откроется в новой вкладке. Переключите его на «Недавние».</p>
     <div class="keys" data-group="ask" id="ask"></div>
-    <p class="hint" id="cityHint" hidden>В вашем городе:</p>
+    <p class="hint" id="cityHint" hidden>В вашем городе. Поиск Threads не строгий: по фразе «маникюр Суботица» он покажет маникюр из любых стран. Поэтому сначала ищите по самому городу, а среди найденного выбирайте нужное. Если мало, попробуйте город латиницей (Subotica, Novi Sad).</p>
     <div class="keys" id="cityKeys"></div>
   </section>
 
@@ -202,9 +202,11 @@ ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
   var day=load("radar-day",{}); if(day.date!==today) day={date:today,count:0,seen:[]};
   var mine=load("radar-mine",[]), niche=load("radar-niche","beauty"), city=load("radar-city","");
   if(!N[niche]) niche="beauty";
-  function url(q){return "https://www.threads.com/search?q="+encodeURIComponent(q)+"&serp_type=default&filter=recent"}
-  function key(q,removable){
-    var a=document.createElement("a"); a.href=url(q); a.target="_blank"; a.rel="noopener"; a.textContent=q;
+  // top=true: Threads ranks by relevance ("Топ"), so the city word in the query actually counts;
+  // "Недавние" sorts by time and lets posts about the service from any country through.
+  function url(q,top){return "https://www.threads.com/search?q="+encodeURIComponent(q)+"&serp_type=default"+(top?"":"&filter=recent")}
+  function key(q,removable,top){
+    var a=document.createElement("a"); a.href=url(q,top); a.target="_blank"; a.rel="noopener"; a.textContent=q;
     if(day.seen.indexOf(q)>-1) a.className="seen";
     a.addEventListener("click",function(){ if(day.seen.indexOf(q)<0){day.seen.push(q);save("radar-day",day)} a.className="seen"; });
     if(!removable) return a;
@@ -222,7 +224,10 @@ ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
     var ask=document.getElementById("ask"); ask.textContent=""; N[niche].ask.forEach(function(q){ask.appendChild(key(q,false))});
     var ck=document.getElementById("cityKeys"); ck.textContent=""; var c=city.trim();
     document.getElementById("cityHint").hidden=!c;
-    if(c) N[niche].kw.forEach(function(k){ck.appendChild(key(k+" "+c,false))});
+    if(c){
+      [c, c+" посоветуйте", c+" ищу"].forEach(function(q){ck.appendChild(key(q,false,true))});
+      N[niche].kw.forEach(function(k){ck.appendChild(key(c+" "+k,false,true))});
+    }
     var m=document.getElementById("mine"); m.textContent=""; mine.forEach(function(q){m.appendChild(key(q,true))});
     document.getElementById("count").textContent=day.count;
     document.getElementById("bar").style.width=Math.min(100,day.count/GOAL*100)+"%";
