@@ -100,6 +100,8 @@ td small{display:block;color:var(--muted);font-size:13px}
 .langs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex:none}
 .langs button{min-height:36px;min-width:44px;padding:6px 12px;border:0;border-radius:999px;background:none;font-weight:700;font-size:14px;color:var(--muted)}
 .langs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.pagelink{font-weight:600;font-size:15px;color:var(--accent);text-decoration:none;align-self:flex-start}
+.pagelink:hover{text-decoration:underline}
 .card.flash{outline:3px solid var(--accent);outline-offset:2px;transition:outline-color 1.2s}
 </style>
 </head>
@@ -188,6 +190,7 @@ td small{display:block;color:var(--muted);font-size:13px}
     "принимают на дому, выезжают или не отметили адрес, они в списке ниже.":"приймають удома, виїжджають або не позначили адресу, вони в списку нижче.",
     "Нажмите на точку, чтобы увидеть, кто там принимает.":"Натисніть на точку, щоб побачити, хто там приймає.",
     "Не получилось загрузить мастеров. Обновите страницу через минуту.":"Не вдалося завантажити майстрів. Оновіть сторінку за хвилину.",
+    "Страница мастера →":"Сторінка майстра →",
     "Свои мастера в Сербии · Botika":"Свої майстри в Сербії · Botika"
   };
   function pickLang(){
@@ -212,6 +215,7 @@ td small{display:block;color:var(--muted);font-size:13px}
       applyLang(); render();
     });
   });
+  var PATHS={}; // master id → /mastera/m/<name>-<city>/, made by scripts/build-mastera-pages.mjs
   var cards=[], city="Суботица", svc="Косметолог", place="Все", job="Все мастера", open={}, view="list";
   var JOB="💼 Ищут постоянную работу";
   var CENTER={"Суботица":[46.1003,19.6656],"Нови-Сад":[45.2671,19.8335],"Белград":[44.8125,20.4612]};
@@ -255,7 +259,8 @@ td small{display:block;color:var(--muted);font-size:13px}
       (uses?'<div class="block"><span class="bh">'+t("Чем работает")+'</span><div class="uses">'+uses+'</div></div>':'')+
       '<div class="block"><span class="bh">'+t("Цены")+'</span><table>'+shown.map(function(r){return '<tr><td>'+esc(r.name)+(r.duration?'<small>'+esc(r.duration)+'</small>':'')+'</td><td class="p">'+fmt(r)+'</td></tr>'}).join("")+'</table>'+
       (m.prices.length>3?'<button type="button" class="more">'+(open[key]?t('Свернуть'):t('Все цены')+' ('+m.prices.length+')')+'</button>':'')+'</div>'+
-      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>'+t("запись:")+' '+(m.sample?esc(m.contact):contactLink(m.contact))+'</span></div>';
+      '<div class="book"><span class="lang">'+esc(m.languages)+'</span><span>'+t("запись:")+' '+(m.sample?esc(m.contact):contactLink(m.contact))+'</span></div>'+
+      (m.id&&PATHS[m.id]?'<a class="pagelink" href="'+esc(PATHS[m.id])+'">'+t("Страница мастера →")+'</a>':'');
     var mb=el.querySelector(".more"); if(mb) mb.addEventListener("click",function(){open[key]=!open[key];render()});
     return el;
   }
@@ -335,6 +340,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   document.getElementById("vList").addEventListener("click",function(){view="list";render()});
   document.getElementById("vMap").addEventListener("click",function(){view="map";render()});
   render();
+  fetch("/mastera/m/paths.json").then(function(r){return r.ok?r.json():{}}).then(function(p){PATHS=p||{};if(cards.length)render()}).catch(function(){});
   fetch(API).then(function(r){if(!r.ok) throw new Error(r.status); return r.json()}).then(function(data){
     cards=(data.cards||[]).map(function(c){c.prices=Array.isArray(c.prices)?c.prices:[];return c});
     if(data.bot){var a=document.getElementById("botLink"); a.href=data.bot; a.hidden=false;}
