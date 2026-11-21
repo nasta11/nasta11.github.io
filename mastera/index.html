@@ -346,7 +346,8 @@ td small{display:block;color:var(--muted);font-size:13px}
     if(data.bot){var a=document.getElementById("botLink"); a.href=data.bot; a.hidden=false;}
     // ?city=…&svc=… (links from the city and service pages) opens that pair.
     try{var qs=new URLSearchParams(location.search), qc=qs.get("city"), qv=qs.get("svc");
-      if(qc&&qv&&cards.some(function(c){return c.city===qc&&c.service===qv})){city=qc; svc=qv;}}catch(e){}
+      if(qc&&qv&&cards.some(function(c){return c.city===qc&&c.service===qv})){city=qc; svc=qv;}
+      else if(qc){var inCity=cards.filter(function(c){return c.city===qc}); if(inCity.length){city=qc; svc=inCity[0].service;}}}catch(e){}
     if(cards.length && !cards.some(function(c){return c.city===city&&c.service===svc})){city=cards[0].city; svc=cards[0].service;}
     render();
   }).catch(function(){
