@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Страница мастера · Свои мастера</title>
+<!-- The bot sends masters /mastera/m/?id=<card id>; this page finds the real address in paths.json
+     (written by scripts/build-mastera-pages.mjs) and opens it. Not generated, edit by hand. -->
+<style>
+body{margin:0;background:#F6F1EC;color:#2A1F1C;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+@media (prefers-color-scheme: dark){body{background:#1A1514;color:#F3EAE6}a{color:#E87F93}}
+.wrap{max-width:520px;margin:0 auto;padding:48px 20px;display:flex;flex-direction:column;gap:12px}
+a{color:#B4485E;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap" id="box"><p>Открываю страницу мастера…</p></div>
+<script>
+(function () {
+  var id = (location.search.match(/[?&]id=([^&#]+)/) || [])[1];
+  var box = document.getElementById("box");
+  function fail() {
+    box.innerHTML = "<h1 style=\"font-size:24px;margin:0\">Страница скоро появится</h1>" +
+      "<p>Новые страницы мастеров появляются в течение часа после публикации карточки. Загляните чуть позже.</p>" +
+      "<p><a href=\"/mastera/\">Открыть каталог «Свои мастера» →</a></p>";
+  }
+  if (!id) return fail();
+  fetch("/mastera/m/paths.json", { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .then(function (paths) {
+      var path = paths[decodeURIComponent(id)];
+      if (path && /^\/mastera\/m\/[a-z0-9-]+\/$/.test(path)) location.replace(path);
+      else fail();
+    })
+    .catch(fail);
+})();
+</script>
+</body>
+</html>
