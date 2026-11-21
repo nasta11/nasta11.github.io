@@ -112,7 +112,8 @@ function pageHtml({ city, service, cards, path, others }) {
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
   { "@type": "ListItem", position: 1, name: "Свои мастера", item: `${SITE}/mastera/` },
-  { "@type": "ListItem", position: 2, name: city },
+  // Google wants an "item" link on every step but the last: the city step opens the catalog on that city.
+  { "@type": "ListItem", position: 2, name: city, item: `${SITE}/mastera/?city=${encodeURIComponent(city)}` },
   { "@type": "ListItem", position: 3, name: service, item: url },
 ] }).replace(/</g, "\\u003c")}</script>
 <style>
