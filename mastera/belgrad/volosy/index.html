@@ -62,7 +62,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="place"><span aria-hidden="true">🚪</span><div><b>Кабинет</b><span>Трг Републике - Теразије 6, Београд</span></div></div>
   
   <table><caption>Цены</caption><tr><td>стрижка</td><td class="p">2 000 дин</td></tr><tr><td>оформление бороды</td><td class="p">1 000 дин</td></tr></table>
-  <div class="book"><span>Русский</span><span>запись: <a href="https://t.me/Barber_Belgrade" rel="noopener">@Barber_Belgrade</a></span></div>
+  <div class="book"><span>Русский</span><span>запись: <a data-zapis="Дмитрий Барбер Белград" href="https://t.me/Barber_Belgrade" rel="noopener">@Barber_Belgrade</a></span></div>
   <a class="page" href="/mastera/m/dmitriy-barber-belgrad/">Страница мастера →</a>
 </article>
   <a class="cta" href="/mastera/?city=%D0%91%D0%B5%D0%BB%D0%B3%D1%80%D0%B0%D0%B4&amp;svc=%D0%92%D0%BE%D0%BB%D0%BE%D1%81%D1%8B">Все мастера в каталоге →</a>
@@ -70,6 +70,14 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="more">Ещё в каталоге:<ul><li><a href="/mastera/belgrad/brovi-i-resnitsy/">Брови и ресницы в Белграде</a></li><li><a href="/mastera/novi-sad/volosy/">Волосы в Нови-Саде</a></li></ul></div>
   <div class="more">Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
+});
+</script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

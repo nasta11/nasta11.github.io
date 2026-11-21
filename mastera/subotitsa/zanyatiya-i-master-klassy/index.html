@@ -62,7 +62,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="place"><span aria-hidden="true">🎨</span><div><b>Студия / мастерская</b><span>Центр, около ратуши</span></div></div>
   
   <table><caption>Цены</caption><tr><td>Арт-занятие для детей 5-7 лет<small>60 минут</small></td><td class="p">1 200 дин</td></tr><tr><td>Арт-занятие для детей 8-11 лет<small>90 минут</small></td><td class="p">1 200 дин</td></tr><tr><td>Арт-занятие для подростков и взрослых<small>2,5 часа</small></td><td class="p">2 000 дин</td></tr></table>
-  <div class="book"><span>Русский</span><span>запись: <a href="https://t.me/OlgaKhazova" rel="noopener">@OlgaKhazova</a></span></div>
+  <div class="book"><span>Русский</span><span>запись: <a data-zapis="Ольга Хазова / арт-пространство O.STUDIO" href="https://t.me/OlgaKhazova" rel="noopener">@OlgaKhazova</a></span></div>
   <a class="page" href="/mastera/m/olga-hazova-art-prostranstvo-o-studio-subotitsa/">Страница мастера →</a>
 </article>
   <a class="cta" href="/mastera/?city=%D0%A1%D1%83%D0%B1%D0%BE%D1%82%D0%B8%D1%86%D0%B0&amp;svc=%D0%97%D0%B0%D0%BD%D1%8F%D1%82%D0%B8%D1%8F%20%D0%B8%20%D0%BC%D0%B0%D1%81%D1%82%D0%B5%D1%80-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D1%8B">Все мастера в каталоге →</a>
@@ -70,6 +70,14 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="more">Ещё в каталоге:<ul><li><a href="/mastera/subotitsa/domashnyaya-eda-i-polufabrikaty/">Домашняя еда и полуфабрикаты в Суботице</a></li><li><a href="/mastera/subotitsa/it-sayty-i-dizayn/">IT, сайты и дизайн в Суботице</a></li><li><a href="/mastera/subotitsa/manikyur-i-pedikyur/">Маникюр и педикюр в Суботице</a></li><li><a href="/mastera/subotitsa/repetitory-i-yazyki/">Репетиторы и языки в Суботице</a></li><li><a href="/mastera/subotitsa/sport-i-fitnes/">Спорт и фитнес в Суботице</a></li><li><a href="/mastera/subotitsa/tatu-i-pirsing/">Тату и пирсинг в Суботице</a></li><li><a href="/mastera/subotitsa/zhivotnye-i-gruming/">Животные и груминг в Суботице</a></li></ul></div>
   <div class="more">Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
+});
+</script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -70,6 +70,14 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="more">Ещё в каталоге:<ul><li><a href="/mastera/subotitsa/it-sayty-i-dizayn/">IT, сайты и дизайн в Суботице</a></li><li><a href="/mastera/subotitsa/manikyur-i-pedikyur/">Маникюр и педикюр в Суботице</a></li><li><a href="/mastera/subotitsa/repetitory-i-yazyki/">Репетиторы и языки в Суботице</a></li><li><a href="/mastera/subotitsa/sport-i-fitnes/">Спорт и фитнес в Суботице</a></li><li><a href="/mastera/subotitsa/tatu-i-pirsing/">Тату и пирсинг в Суботице</a></li><li><a href="/mastera/subotitsa/zanyatiya-i-master-klassy/">Занятия и мастер-классы в Суботице</a></li><li><a href="/mastera/subotitsa/zhivotnye-i-gruming/">Животные и груминг в Суботице</a></li></ul></div>
   <div class="more">Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
+});
+</script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

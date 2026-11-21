@@ -62,7 +62,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="place"><span aria-hidden="true">🚪</span><div><b>Кабинет</b><span>Alekse Šantića 62</span></div></div>
   
   <table><caption>Цены</caption><tr><td>Botoks od 12000 din Biorevitalizacija</td><td class="p">от 14 000 дин</td></tr><tr><td>Hemijski piling</td><td class="p">от 8 000 дин</td></tr><tr><td>Radiesse</td><td class="p">41 000 дин</td></tr><tr><td>Filer</td><td class="p">24 000 дин</td></tr></table>
-  <div class="book"><span>Srpski</span><span>запись: <a href="https://t.me/singur_clinic" rel="noopener">@singur_clinic</a></span></div>
+  <div class="book"><span>Srpski</span><span>запись: <a data-zapis="Лікар-Косметолог Нові Сад" href="https://t.me/singur_clinic" rel="noopener">@singur_clinic</a></span></div>
   <a class="page" href="/mastera/m/likar-kosmetolog-novi-sad/">Страница мастера →</a>
 </article>
   <a class="cta" href="/mastera/?city=%D0%9D%D0%BE%D0%B2%D0%B8-%D0%A1%D0%B0%D0%B4&amp;svc=%D0%9A%D0%BE%D1%81%D0%BC%D0%B5%D1%82%D0%BE%D0%BB%D0%BE%D0%B3">Все мастера в каталоге →</a>
@@ -70,6 +70,14 @@ td small{display:block;color:var(--muted);font-size:13px}
   <div class="more">Ещё в каталоге:<ul><li><a href="/mastera/novi-sad/brovi-i-resnitsy/">Брови и ресницы в Нови-Саде</a></li><li><a href="/mastera/novi-sad/massazh/">Массаж в Нови-Саде</a></li><li><a href="/mastera/novi-sad/volosy/">Волосы в Нови-Саде</a></li></ul></div>
   <div class="more">Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
+});
+</script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

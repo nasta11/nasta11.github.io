@@ -70,7 +70,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   </div></div>
 
   <div class="actions">
-    <a class="btn" href="https://t.me/PodoNika" rel="noopener">Записаться</a>
+    <a class="btn" href="https://t.me/PodoNika" rel="noopener" data-zapis="Виктория подолог">Записаться</a>
     <button class="btn ghost" type="button" id="share">Поделиться</button>
   </div>
   
@@ -99,6 +99,14 @@ document.getElementById("share").addEventListener("click", function () {
   var b = this, url = location.href.split("?")[0];
   if (navigator.share) { navigator.share({ title: document.title, url: url }).catch(function () {}); return; }
   (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = "Ссылка скопирована ✓"; }, function () { prompt("Ссылка на страницу:", url); });
+});
+</script>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
 });
 </script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
