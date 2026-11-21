@@ -46,6 +46,9 @@ function contactLink(raw) {
   return esc(c);
 }
 
+// Marks a contact link so a tap on it is counted (see the click script in the pages).
+const zapis = (html, name) => String(html).replace(/^<a /, `<a data-zapis="${esc(name)}" `);
+
 // Where the big "Записаться" button leads (null when the contact is not a link).
 function contactHref(raw) {
   const m = String(contactLink(raw)).match(/^<a href="([^"]+)"/);
@@ -70,7 +73,7 @@ function cardHtml(m, i) {
   <div class="place"><span aria-hidden="true">${ICON[m.place] || "📍"}</span><div><b>${esc(m.place)}</b>${m.placeNote ? `<span>${esc(m.placeNote)}</span>` : ""}</div></div>
   ${uses ? `<p class="uses">Чем работает: ${uses}</p>` : ""}
   ${rows ? `<table><caption>Цены</caption>${rows}</table>` : ""}
-  <div class="book">${m.languages ? `<span>${esc(m.languages)}</span>` : ""}<span>запись: ${contactLink(m.contact)}</span></div>
+  <div class="book">${m.languages ? `<span>${esc(m.languages)}</span>` : ""}<span>запись: ${zapis(contactLink(m.contact), m.name)}</span></div>
   ${m.path ? `<a class="page" href="${m.path}">Страница мастера →</a>` : ""}
 </article>`;
 }
@@ -160,6 +163,14 @@ td small{display:block;color:var(--muted);font-size:13px}
   ${others.length ? `<div class="more">Ещё в каталоге:<ul>${others.map((o) => `<li><a href="${o.path}">${esc(title(o.service, o.city))}</a></li>`).join("")}</ul></div>` : ""}
   <div class="more">Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
+});
+</script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
@@ -301,10 +312,10 @@ td small{display:block;color:var(--muted);font-size:13px}
   </div></div>
 
   <div class="actions">
-    ${href ? `<a class="btn" href="${esc(href)}" rel="noopener">Записаться</a>` : ""}
+    ${href ? `<a class="btn" href="${esc(href)}" rel="noopener" data-zapis="${esc(m.name)}">Записаться</a>` : ""}
     <button class="btn ghost" type="button" id="share">Поделиться</button>
   </div>
-  ${!href && m.contact ? `<p class="muted">Запись: ${contactLink(m.contact)}</p>` : ""}
+  ${!href && m.contact ? `<p class="muted">Запись: ${zapis(contactLink(m.contact), m.name)}</p>` : ""}
 
   ${rows ? `<section><h2>Цены</h2>${from ? `<p class="muted">${esc(from.charAt(0).toUpperCase() + from.slice(1))}</p>` : ""}<table>${rows}</table></section>` : ""}
 
@@ -329,6 +340,14 @@ document.getElementById("share").addEventListener("click", function () {
   var b = this, url = location.href.split("?")[0];
   if (navigator.share) { navigator.share({ title: document.title, url: url }).catch(function () {}); return; }
   (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = "Ссылка скопирована ✓"; }, function () { prompt("Ссылка на страницу:", url); });
+});
+</script>
+<script>
+// Counts taps on "Записаться" as GoatCounter events (zapis/<master>), no cookies.
+document.addEventListener("click", function (e) {
+  var a = e.target.closest && e.target.closest("a[data-zapis]"); if (!a) return;
+  var gc = window.goatcounter, who = a.getAttribute("data-zapis");
+  if (gc && gc.count) gc.count({ path: "zapis/" + who, title: "Записаться: " + who, event: true });
 });
 </script>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
