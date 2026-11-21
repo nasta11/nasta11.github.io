@@ -81,6 +81,14 @@ td small{display:block;color:var(--muted);font-size:13px}
 .join{background:var(--mint);color:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:6px}
 .join b{font-size:17px}
 .foot{font-size:13px;color:var(--muted);text-align:center}
+.seo{font-size:13px;color:var(--muted);text-align:center}
+.seo summary{cursor:pointer;list-style:none;padding:8px;color:var(--muted)}
+.seo summary::-webkit-details-marker{display:none}
+.seo summary::after{content:" ▾"}
+.seo[open] summary::after{content:" ▴"}
+.seo p{margin:6px 0;line-height:1.6}
+.seo a{color:var(--muted)}
+.seo a:hover{color:var(--accent)}
 
 .state{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px}
 .state b{font-size:17px}

@@ -601,9 +601,10 @@ async function main() {
   // Links from the catalog page, so search engines find the pages there too.
   const indexPath = join(MASTERA, "index.html");
   const index = readFileSync(indexPath, "utf8");
-  const links = [...cities.map((c) => `<a href="/mastera/${slug(c)}/">Мастера ${esc(cityIn(c))}</a>`),
-    ...pages.map((p) => `<a href="${p.path}">${esc(title(p.service, p.city))}</a>`), `<a href="/mastera/o-proekte/">О проекте</a>`].join(" · ");
-  const block = `<!-- seo-links:start -->${pages.length ? `<nav class="foot" aria-label="Мастера по городам">${links}</nav>` : ""}<!-- seo-links:end -->`;
+  // Folded away under «Все города и услуги»: search engines still follow the links,
+  // people see one quiet line instead of a wall of links.
+  const byCity = cities.map((c) => `<p><a href="/mastera/${slug(c)}/"><b>${esc(c)}</b></a>: ${pages.filter((p) => p.city === c).map((p) => `<a href="${p.path}">${esc(p.service)}</a>`).join(" · ")}</p>`).join("");
+  const block = `<!-- seo-links:start -->${pages.length ? `<details class="seo"><summary>Все города и услуги</summary>${byCity}<p><a href="/mastera/o-proekte/">О проекте «Свои мастера»</a></p></details>` : ""}<!-- seo-links:end -->`;
   writeFileSync(indexPath, index.replace(/<!-- seo-links:start -->[\s\S]*?<!-- seo-links:end -->/, block));
 
   // Sitemap: the three main pages plus one line per generated page. No dates,
