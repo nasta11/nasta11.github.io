@@ -69,7 +69,7 @@ function cardHtml(m, i) {
   const rows = (m.prices || []).map((p) => `<tr><td>${esc(p.name)}${p.duration ? `<small>${esc(p.duration)}</small>` : ""}</td><td class="p">${money(p)}</td></tr>`).join("");
   const uses = [m.devices, m.cosmetics].filter(Boolean).map(esc).join(" · ");
   return `<article class="card">
-  <div class="top"><div class="ava" style="background:${PAL[i % PAL.length]}">${esc((m.name || "?").charAt(0))}</div><div class="who"><h2>${m.path ? `<a href="${m.path}">${esc(m.name)}</a>` : esc(m.name)}</h2><span>${esc(m.service)} · ${esc(m.city)}</span></div>${m.seeksJob ? '<span class="tag">ищет работу</span>' : ""}</div>
+  <div class="top">${/^https:\/\/[^\s"<>]+$/.test(m.photo || "") ? `<img class="ava" src="${esc(m.photo)}" alt="" loading="lazy">` : `<div class="ava" style="background:${PAL[i % PAL.length]}">${esc((m.name || "?").charAt(0))}</div>`}<div class="who"><h2>${m.path ? `<a href="${m.path}">${esc(m.name)}</a>` : esc(m.name)}</h2><span>${esc(m.service)} · ${esc(m.city)}</span></div>${m.seeksJob ? '<span class="tag">ищет работу</span>' : ""}</div>
   <div class="place"><span aria-hidden="true">${ICON[m.place] || "📍"}</span><div><b>${esc(m.place)}</b>${m.placeNote ? `<span>${esc(m.placeNote)}</span>` : ""}</div></div>
   ${uses ? `<p class="uses">Чем работает: ${uses}</p>` : ""}
   ${rows ? `<table><caption>Цены</caption>${rows}</table>` : ""}
@@ -128,7 +128,7 @@ h1{font-size:clamp(26px,7vw,34px);line-height:1.15;margin:0}
 .lead{margin:0;color:var(--muted)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .top{display:flex;gap:12px;align-items:center}
-.ava{width:48px;height:48px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:#fff}
+.ava{width:48px;height:48px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;color:#fff;object-fit:cover}
 .who{min-width:0;display:flex;flex-direction:column}
 .who h2{font-size:17px;margin:0}
 .who span{font-size:14px;color:var(--muted)}
