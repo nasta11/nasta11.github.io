@@ -142,6 +142,52 @@ footer a{color:var(--berry)}
 .demo{margin:40px 0 0;font-size:14px;color:var(--muted)}
 .demo+.live{margin-top:10px}
 .langs{color:var(--muted);font-size:15px;margin:-18px 0 34px}
+
+.ph figure{max-width:270px;margin:0 auto}
+.frame{width:100%}
+.scr{width:100%;height:100%;border-radius:30px;overflow:hidden;font-family:var(--sans);font-size:11px;line-height:1.35;color:var(--ink);background:var(--card);display:flex;flex-direction:column}
+.scr b{font-weight:600}
+.s-av{flex:none;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#E3B7C1,#8A3A50);color:#fff;display:grid;place-items:center;font:500 15px/1 var(--serif)}
+/* map */
+.map-s{background:#EADBD5;position:relative}
+.m-search{position:absolute;top:22px;left:14px;right:14px;z-index:2;background:var(--card);border-radius:999px;padding:9px 14px;color:var(--muted);box-shadow:0 4px 12px rgba(31,20,24,.08)}
+.m-map{display:block;width:100%;height:52%}
+.m-sheet{flex:1;background:var(--card);border-radius:20px 20px 0 0;margin-top:-18px;position:relative;padding:16px 14px;display:flex;flex-direction:column;gap:3px}
+.m-sheet b{font:500 17px/1.2 var(--serif)}
+.m-sheet span{color:var(--muted)}
+.m-sheet .m-open{color:#5F7F66}
+.m-chips{display:flex;gap:6px;margin:10px 0}
+.m-chips i,.b-keys i{font-style:normal;background:var(--bg);color:var(--berry);border-radius:999px;padding:6px 10px;font-weight:600}
+.m-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:auto}
+.m-photos u,.s-works u{display:block;aspect-ratio:1;border-radius:10px}
+.m-photos u:nth-child(1),.s-works u:nth-child(3n+1){background:linear-gradient(150deg,#F1D3D8,#C98798)}
+.m-photos u:nth-child(2),.s-works u:nth-child(3n+2){background:linear-gradient(150deg,#E9DDE8,#A98AA6)}
+.m-photos u:nth-child(3),.s-works u:nth-child(3n){background:linear-gradient(150deg,#F3E6D8,#CDAF94)}
+/* site */
+.site-s{padding:28px 14px 14px;gap:10px;background:var(--bg)}
+.s-head{display:flex;align-items:center;gap:10px}
+.s-head b{display:block;font:500 19px/1 var(--serif)}
+.s-head i{font:italic 400 13px/1.3 var(--serif);color:var(--berry)}
+.s-book{background:var(--ink);color:var(--card);text-align:center;border-radius:999px;padding:9px;font-weight:600}
+.s-box{background:var(--card);border-radius:14px;padding:10px 12px}
+.s-box small{display:block;font:italic 400 12px/1 var(--serif);color:var(--muted);margin-bottom:6px}
+.s-box p{display:flex;align-items:baseline;gap:4px;margin:4px 0}
+.s-box p em{flex:1;border-bottom:1px dotted rgba(31,20,24,.3);transform:translateY(-3px)}
+.s-box p span:last-child{font-weight:600;white-space:nowrap}
+.s-works{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.s-addr{margin-top:auto;text-align:center;color:var(--muted);font-size:10px}
+/* bot */
+.bot-s{background:#E6ECE6}
+.b-head{display:flex;align-items:center;gap:10px;background:var(--card);padding:28px 14px 10px}
+.b-head b{display:block;font-size:13px}
+.b-head small{color:var(--muted)}
+.b-chat{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:6px}
+.b-chat p{margin:0;max-width:80%;padding:7px 10px;border-radius:12px}
+.b-chat .in{background:var(--card);align-self:flex-start;border-bottom-left-radius:4px}
+.b-chat .out{background:#D4E1D6;align-self:flex-end;border-bottom-right-radius:4px}
+.b-chat .ok{box-shadow:inset 3px 0 0 #5F7F66}
+.b-keys{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:80%}
+.b-keys i{text-align:center;background:var(--card);padding:6px}
 </style>
 </head>
 <body>
@@ -209,11 +255,40 @@ footer a{color:var(--berry)}
         <p data-i="e0p">Всё просто и понятно для клиента. Он находит вас в Google, знакомится с услугами на сайте и записывается в удобное время.</p>
       </div>
       <div class="phones">
-        <div class="ph"><figure><div class="frame"><img src="google.jpg" loading="lazy" alt="Botika — Google Maps"></div><figcaption><b data-i="e1">Google Карты</b><span data-i="e1p">Профиль с услугами, контактами, фотографиями и ссылкой на ваш сайт.</span></figcaption></figure></div>
-        <div class="ph"><figure><div class="frame"><img src="site.jpg" loading="lazy" alt="Сайт-визитка / website"></div><figcaption><b data-i="e2">Сайт-визитка</b><span data-i="e2p">Услуги и цены сразу перед глазами. Работы, контакты и запись в одном месте.</span></figcaption></figure></div>
-        <div class="ph"><figure><div class="frame"><img src="bot.jpg" loading="lazy" alt="Telegram bot"></div><figcaption><b data-i="e3">Бот для записи</b><span data-i="e3p">Клиент выбирает услугу и время. Вы получаете заявку, а при необходимости клиенту приходит напоминание.</span></figcaption></figure></div>
+        <div class="ph"><figure><div class="frame"><div class="scr map-s">
+            <div class="m-search">маникюр рядом</div>
+            <svg class="m-map" viewBox="0 0 252 250" preserveAspectRatio="xMidYMid slice"><rect width="252" height="250" fill="#EADBD5"/><g fill="#F4EAE6"><rect x="8" y="10" width="70" height="52" rx="8"/><rect x="88" y="10" width="86" height="52" rx="8"/><rect x="184" y="10" width="62" height="52" rx="8"/><rect x="8" y="72" width="110" height="64" rx="8"/><rect x="128" y="72" width="52" height="64" rx="8" fill="#DCE5DD"/><rect x="190" y="72" width="56" height="64" rx="8"/><rect x="8" y="146" width="60" height="60" rx="8"/><rect x="78" y="146" width="102" height="60" rx="8"/><rect x="190" y="146" width="56" height="60" rx="8"/></g><path d="M-5 225 C 60 205 110 170 150 110 S 230 30 260 10" fill="none" stroke="#FBF8F6" stroke-width="10" stroke-linecap="round"/><circle cx="148" cy="112" r="16" fill="#8A3A50" opacity=".14"/><path d="M148 62c-13 0-23 10-23 23 0 17 23 32 23 32s23-15 23-32c0-13-10-23-23-23z" fill="#8A3A50"/><circle cx="148" cy="84" r="8" fill="#FBF8F6"/></svg>
+            <div class="m-sheet"><b>Ана · nail studio</b><span>Маникюр и педикюр · Нови-Сад</span><span class="m-open">Открыто до 20:00</span>
+              <div class="m-chips"><i>Маршрут</i><i>Позвонить</i><i>Сайт</i></div>
+              <div class="m-photos"><u></u><u></u><u></u></div>
+            </div>
+          </div></div><figcaption><b data-i="e1">Google Карты</b><span data-i="e1p">Профиль с услугами, контактами, фотографиями и ссылкой на ваш сайт.</span></figcaption></figure></div>
+        <div class="ph"><figure><div class="frame"><div class="scr site-s">
+            <div class="s-head"><span class="s-av">А</span><div><b>Ана</b><i>nail studio</i></div></div>
+            <div class="s-book">Записаться</div>
+            <div class="s-box"><small>Цены</small>
+              <p><span>Маникюр с покрытием</span><em></em><span>2 500 дин</span></p>
+              <p><span>Укрепление гелем</span><em></em><span>3 000 дин</span></p>
+              <p><span>Педикюр</span><em></em><span>3 200 дин</span></p>
+              <p><span>Дизайн</span><em></em><span>от 300 дин</span></p>
+            </div>
+            <div class="s-box"><small>Работы</small><div class="s-works"><u></u><u></u><u></u><u></u><u></u><u></u></div></div>
+            <div class="s-addr">Нови-Сад, центр · ежедневно 9–20</div>
+          </div></div><figcaption><b data-i="e2">Сайт-визитка</b><span data-i="e2p">Услуги и цены сразу перед глазами. Работы, контакты и запись в одном месте.</span></figcaption></figure></div>
+        <div class="ph"><figure><div class="frame"><div class="scr bot-s">
+            <div class="b-head"><span class="s-av">А</span><div><b>Запись к Ане</b><small>бот</small></div></div>
+            <div class="b-chat">
+              <p class="in">Здравствуйте! Выберите услугу</p>
+              <div class="b-keys"><i>Маникюр</i><i>Педикюр</i><i>Укрепление</i><i>Дизайн</i></div>
+              <p class="out">Маникюр</p>
+              <p class="in">Свободное время в четверг:</p>
+              <div class="b-keys"><i>10:00</i><i>12:30</i><i>15:00</i><i>17:30</i></div>
+              <p class="out">15:00</p>
+              <p class="in ok">Готово! Маникюр, четверг в 15:00. Напомню за день.</p>
+            </div>
+          </div></div><figcaption><b data-i="e3">Бот для записи</b><span data-i="e3p">Клиент выбирает услугу и время. Вы получаете заявку, а при необходимости клиенту приходит напоминание.</span></figcaption></figure></div>
       </div>
-      <p class="demo" data-i="demo">Сайт и бот на картинках — демонстрационный пример. Профиль в Google — настоящий.</p>
+      <p class="demo" data-i="demo">Мастер на экранах — демонстрационный пример.</p>
       <p class="live" data-i="live">Живой пример — <a href="https://nasta11.github.io/mastera/m/viktoriya-podolog-subotitsa/">страница подолога Виктории</a> в каталоге «Свои мастера».</p>
     </div>
   </section>
@@ -276,7 +351,7 @@ e0:"What it <em>looks like</em>",e0p:"Simple and clear for your clients. They fi
 e1:"Google Maps",e1p:"A profile with services, contacts, photos and a link to your website.",
 e2:"Business website",e2p:"Services and prices at a glance. Portfolio, contacts and booking in one place.",
 e3:"Booking bot",e3p:"Clients choose a service and time. You get the request, and clients can receive a reminder.",
-demo:"The website and bot shown are a demo example. The Google profile is real.",
+demo:"The professional shown on the screens is a demo example.",
 live:'Live example: <a href="https://nasta11.github.io/mastera/m/viktoriya-podolog-subotitsa/">podologist Viktoria\'s page</a> in the «Svoi Mastera» catalog.',
 w0:"How it <em>works</em>",w0p:"It is usually ready within a few days, depending on the scope.",
 w1:"Discuss",w1p:"We talk by phone or online, or meet in person in Subotica. You tell me about your work and what you need.",
