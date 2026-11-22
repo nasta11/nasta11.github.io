@@ -1,6 +1,6 @@
 # Свои мастера (Botika)
 
-> Бесплатный каталог мастеров и специалистов в Сербии: Суботица, Нови-Сад, Белград, Becej, Backo Petrovo Selo. У каждого мастера — точные цены на каждую услугу, где он принимает, фото работ и запись в один клик (Telegram, WhatsApp, Viber). Без комиссий. Сейчас 17 мастеров.
+> Бесплатный каталог мастеров и специалистов в Сербии: Суботица, Нови-Сад, Белград, Becej, Backo Petrovo Selo. У каждого мастера — точные цены на каждую услугу, где он принимает, фото работ и запись в один клик (Telegram, WhatsApp, Viber). Без комиссий. Сейчас 18 мастеров.
 
 Мастера добавляются бесплатно через Telegram-бота https://t.me/svoi_mastera_bot. Каталог обновляется автоматически.
 
@@ -11,12 +11,13 @@
 ## Города
 - [Мастера в Суботице](https://nasta11.github.io/mastera/subotitsa/): 8 мастеров
 - [Мастера в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/): 5 мастеров
-- [Мастера в Белграде](https://nasta11.github.io/mastera/belgrad/): 3 мастера
+- [Мастера в Белграде](https://nasta11.github.io/mastera/belgrad/): 4 мастера
 - [Мастера — Becej, Backo Petrovo Selo](https://nasta11.github.io/mastera/becej-backo-petrovo-selo/): 1 мастер
 
 ## Услуги по городам
 - [Маникюр и педикюр, Becej, Backo Petrovo Selo](https://nasta11.github.io/mastera/becej-backo-petrovo-selo/manikyur-i-pedikyur/): 1 мастер, цены от 1 500 дин
 - [Брови и ресницы в Белграде](https://nasta11.github.io/mastera/belgrad/brovi-i-resnitsy/): 2 мастера, цены от 4 000 дин
+- [Няня в Белграде](https://nasta11.github.io/mastera/belgrad/nyanya/): 1 мастер, цены от 300 дин
 - [Волосы в Белграде](https://nasta11.github.io/mastera/belgrad/volosy/): 1 мастер, цены от 1 000 дин
 - [Брови и ресницы в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/brovi-i-resnitsy/): 1 мастер, цены от 1 000 дин
 - [Косметолог в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/kosmetolog/): 1 мастер, цены от 8 000 дин
