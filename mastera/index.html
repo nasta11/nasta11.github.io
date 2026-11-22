@@ -177,9 +177,26 @@ td.p{font-family:var(--body);font-weight:600;font-size:15px}
 :root{--deep:#4A2433}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--deep:#5A2C3E}}
 :root[data-theme="dark"]{--deep:#5A2C3E}
+h1{font-size:clamp(44px,8vw,76px);line-height:.98;letter-spacing:-.035em}
+h1::after{display:none}
+header::before{content:"Каталог мастеров Сербии";align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 12px;font-size:13px;color:var(--muted);background:rgba(251,248,246,.6);margin-bottom:10px}
+.langs{background:rgba(31,20,24,.06);border:0}
+.langs button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(31,20,24,.12)}
+.join{background:var(--surface);color:var(--ink);border-radius:28px;padding:clamp(24px,5vw,40px);box-shadow:0 1px 0 var(--line),0 18px 40px rgba(31,20,24,.05)}
+.join b{font:400 clamp(28px,5vw,40px)/1.05 var(--serif);letter-spacing:-.03em}
+.join a:not(.btn){color:var(--accent)}
+.join .btn{background:var(--ink);color:var(--surface);align-self:flex-start;min-height:48px;padding:0 24px;display:inline-flex;align-items:center}
+.join .btn:hover{background:var(--accent)}
+.topnav{position:sticky;top:12px;z-index:1000;max-width:760px;margin:12px auto 0;width:calc(100% - 24px);display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(251,248,246,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-radius:999px;padding:8px 8px 8px 20px;box-shadow:0 1px 0 var(--line),0 10px 30px rgba(31,20,24,.06)}
+.topnav .logo{font:500 20px/1 var(--serif);color:var(--ink);text-decoration:none;white-space:nowrap}
+.topnav .logo i{color:var(--accent);font-weight:400}
+.topnav .pill{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--surface);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap}
+.topnav .pill:hover{background:var(--accent)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .topnav{background:rgba(36,22,28,.86)}}
 </style>
 </head>
 <body>
+<nav class="topnav" aria-label="Botika"><a class="logo" href="/usluge/">Botika <i>studio</i></a><a class="pill" href="/usluge/">Для мастеров</a></nav>
 <div class="wrap">
   <header>
     <div class="titlebar">
