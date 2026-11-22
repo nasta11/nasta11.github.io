@@ -755,7 +755,7 @@ async function main() {
 
   // Sitemap: the three main pages plus one line per generated page. No dates,
   // so a run that changes nothing leaves the file (and the repository) as it was.
-  const urls = ["/", "/mastera/", "/radar/", ...extra.map((e) => e.path), ...pages.map((p) => p.path), ...cards.map((c) => c.path)];
+  const urls = ["/", "/usluge/", "/mastera/", "/radar/", ...extra.map((e) => e.path), ...pages.map((p) => p.path), ...cards.map((c) => c.path)];
   writeFileSync(join(ROOT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join("\n")}

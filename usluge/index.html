@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Botika studio — цифровая студия для частных мастеров</title>
+<meta name="description" content="Google Карты, сайты-визитки и боты для записи для мастеров по всей Сербии.">
+<link rel="canonical" href="https://nasta11.github.io/usluge/">
+<meta property="og:title" content="Botika studio — цифровая студия для частных мастеров">
+<meta property="og:description" content="Google Карты, сайты-визитки и боты для записи для мастеров по всей Сербии.">
+<meta property="og:url" content="https://nasta11.github.io/usluge/">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: тихая роскошь, как у хорошего салона красоты
+IDEA: журнальная обложка бьюти-студии
+PICTURE: три экрана мастера на светлой пудре
+COLOUR/TYPE: пудровый беж, слива-чернила, ягодный курсив, шалфей; Playfair Display + Golos Text
+LAYOUT: плавающее меню, крупная обложка с карточкой, бегущая строка, разворот услуг, примеры, контакт
+*/
+:root{
+  --bg:#F2EDEA; --card:#FBF8F6; --ink:#1F1418; --muted:#76666B;
+  --berry:#8A3A50; --sage:#A9B8AB; --line:rgba(31,20,24,.12);
+  --serif:"Playfair Display", Georgia, serif;
+  --sans:"Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--berry);outline-offset:4px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,40px)}
+em{font-style:italic;color:var(--berry)}
+h1 span,h1 em{display:block}
+
+/* nav */
+.nav{position:sticky;top:14px;z-index:10;margin:14px auto 0;max-width:1120px;width:calc(100% - 28px);display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(251,248,246,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:999px;padding:10px 10px 10px 22px;box-shadow:0 1px 0 var(--line),0 10px 30px rgba(31,20,24,.06)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:500 22px/1 var(--serif)}
+.logo i{font-weight:400;color:var(--berry)}
+.links{display:flex;gap:28px;font-size:15px}
+.links a{text-decoration:none;color:var(--muted)}
+.links a:hover{color:var(--ink)}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 24px;border-radius:999px;background:var(--ink);color:var(--card);text-decoration:none;font:500 15px/1 var(--sans);white-space:nowrap;transition:background .2s}
+.pill:hover{background:var(--berry)}
+.pill.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(31,20,24,.25)}
+.pill.ghost:hover{background:rgba(31,20,24,.05)}
+.pill.big{min-height:56px;padding:0 30px;font-size:16px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.8fr);gap:56px;align-items:end;padding-block:88px 72px}
+.badge{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:14px;color:var(--muted);margin-bottom:34px;background:rgba(251,248,246,.6)}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--berry)}
+h1{font:400 clamp(48px,7.4vw,104px)/.98 var(--serif);letter-spacing:-.035em;margin:0 0 32px;text-wrap:balance}
+.lead{font-size:18px;color:var(--muted);max-width:48ch;margin:0 0 12px}
+.slogan{font:italic 400 21px/1.35 var(--serif);color:var(--ink);margin:0 0 36px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:34px;font-size:14px;color:var(--muted)}
+.meta span+span{padding-left:22px;border-left:1px solid var(--line)}
+
+.card{background:var(--card);border-radius:28px;padding:26px 28px 10px;box-shadow:0 30px 60px rgba(31,20,24,.08)}
+.card h2{font:italic 400 15px/1 var(--serif);color:var(--muted);margin:0 0 8px}
+.card a{display:grid;gap:4px;padding:18px 0;border-top:1px solid var(--line);text-decoration:none}
+.card a:first-of-type{border-top:0}
+.card b{font:500 21px/1.2 var(--serif);letter-spacing:-.01em}
+.card small{font-size:14px;color:var(--muted)}
+.card a:hover b{color:var(--berry)}
+
+/* marquee */
+.ticker{border-block:1px solid var(--line);overflow:hidden;padding:20px 0}
+.track{display:flex;width:max-content;animation:run 40s linear infinite}
+.track span{font:italic 400 clamp(22px,2.6vw,32px)/1 var(--serif);letter-spacing:-.02em;padding:0 22px;white-space:nowrap}
+.track span:nth-child(even){color:var(--sage);font-style:normal;padding:0}
+@keyframes run{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.track{animation:none}html{scroll-behavior:auto}}
+
+/* sections */
+.band{padding:clamp(72px,10vw,128px) 0}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:52px}
+h2.t{font:400 clamp(38px,4.8vw,64px)/1 var(--serif);letter-spacing:-.03em;margin:0}
+.head p{margin:0;color:var(--muted);max-width:44ch}
+.svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.svc li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;padding:34px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.svc h3{font:400 clamp(26px,2.8vw,36px)/1.1 var(--serif);letter-spacing:-.02em;margin:0}
+.svc p{margin:0;color:var(--muted)}
+.free{display:table;margin:0 0 12px;font:500 13px/1 var(--sans);background:var(--sage);color:var(--ink);border-radius:999px;padding:6px 11px;vertical-align:middle;letter-spacing:0}
+
+/* examples */
+.shows{background:var(--card)}
+.phones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;align-items:start}
+.ph figure{margin:0}
+.frame{border-radius:38px;background:#140C10;padding:9px;aspect-ratio:9/18.5;box-shadow:0 40px 70px rgba(31,20,24,.16)}
+.frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:30px}
+.ph:nth-child(2){margin-top:56px}
+.ph figcaption{margin-top:22px}
+.ph figcaption b{display:block;font:400 24px/1.2 var(--serif);letter-spacing:-.01em}
+.ph figcaption span{color:var(--muted);font-size:15px}
+.live{margin:56px 0 0;color:var(--muted)}
+.live a{color:var(--berry);text-underline-offset:3px}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));counter-reset:s;border-top:1px solid var(--line)}
+.steps li{counter-increment:s;padding:30px 32px 0 0}
+.steps li+li{padding-left:32px;border-left:1px solid var(--line)}
+.steps li::before{content:counter(s,decimal-leading-zero);display:block;font:italic 400 44px/1 var(--serif);color:var(--berry);margin-bottom:18px}
+.steps h3{font:400 28px/1.15 var(--serif);letter-spacing:-.02em;margin:0 0 10px}
+.steps p{margin:0;color:var(--muted)}
+
+/* contact */
+.contact{text-align:center;padding-bottom:40px}
+.contact .sub{color:var(--muted);max-width:44ch;margin:22px auto 0}
+.name{font:italic 400 22px/1.2 var(--serif);color:var(--berry);margin:48px 0 0}
+.tel{display:inline-block;font:400 clamp(40px,7.4vw,96px)/1 var(--serif);letter-spacing:-.035em;text-decoration:none;margin:14px 0 18px;white-space:nowrap}
+.tel:hover{color:var(--berry)}
+.who{color:var(--muted);margin:0 auto 34px;max-width:44ch}
+.contact .actions{justify-content:center}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:100px;padding:24px 0 40px;border-top:1px solid var(--line);font-size:15px;color:var(--muted)}
+footer a{color:var(--berry)}
+
+@media (max-width:920px){
+  .links{display:none}
+  .hero{grid-template-columns:1fr;padding-block:56px;gap:40px}
+  .head{grid-template-columns:1fr;gap:16px}
+  .svc li{grid-template-columns:1fr;gap:10px;padding:26px 0}
+  .phones{grid-template-columns:1fr;max-width:340px;margin:0 auto;gap:56px}
+  .ph:nth-child(2){margin-top:0}
+  .steps{grid-template-columns:1fr}
+  .steps li,.steps li+li{padding:26px 0;border-left:0;border-bottom:1px solid var(--line)}
+}
+@media (max-width:420px){
+  .nav{padding-left:16px}
+  .pill{padding:0 18px}
+  .meta span+span{padding-left:0;border-left:0}
+}
+.lang{display:flex;gap:2px;background:rgba(31,20,24,.06);border-radius:999px;padding:3px;margin-left:auto}
+.lang button{border:0;background:transparent;font:500 13px/1 var(--sans);color:var(--muted);padding:9px 11px;border-radius:999px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(31,20,24,.12)}
+.lang button:focus-visible{outline:2px solid var(--berry);outline-offset:2px}
+.nav-r{display:flex;align-items:center;gap:10px}
+.demo{margin:40px 0 0;font-size:14px;color:var(--muted)}
+.demo+.live{margin-top:10px}
+.langs{color:var(--muted);font-size:15px;margin:-18px 0 34px}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Menu">
+  <a class="logo" href="#">Botika <i>studio</i></a>
+  <div class="links">
+    <a href="#uslugi" data-i="n1">Услуги</a>
+    <a href="#primery" data-i="n2">Примеры</a>
+    <a href="#kak" data-i="n3">Как работаем</a>
+    <a href="#kontakt" data-i="n4">Контакт</a>
+  </div>
+  <div class="nav-r">
+    <div class="lang" role="group" aria-label="Язык / Language">
+      <button type="button" data-l="ru" aria-pressed="true">RU</button>
+      <button type="button" data-l="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="pill" href="tel:+381665796200" data-i="call">Позвонить</a>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div>
+    <div class="badge" data-i="badge">Цифровая студия для частных мастеров</div>
+    <h1 data-i="h1"><span>Ваше дело.</span> <em>Ваш стиль.</em> <span>Ваш онлайн.</span></h1>
+    <p class="lead" data-i="lead">Ваше дело заслуживает красивого присутствия. Продуманные цифровые решения для мастеров и специалистов в Сербии: Google Карты, сайты-визитки и боты для записи.</p>
+    <p class="slogan" data-i="slogan">Заметность. Удобство. Время для себя и своего дела.</p>
+    <div class="actions">
+      <a class="pill big" href="#kontakt" data-i="b1">Обсудить проект</a>
+      <a class="pill big ghost" href="#primery" data-i="b2">Посмотреть примеры</a>
+    </div>
+    <div class="meta"><span data-i="meta">Работаю онлайн по всей Сербии</span><span>066 579 6200</span></div>
+  </div>
+  <aside class="card">
+    <h2 data-i="c0">Три главных услуги</h2>
+    <a href="#uslugi"><b data-i="c1">Google Карты</b><small data-i="c1s">Профиль, который находят в поиске</small></a>
+    <a href="#uslugi"><b data-i="c2">Сайт-визитка</b><small data-i="c2s">Цены, работы и кнопка записи</small></a>
+    <a href="#uslugi"><b data-i="c3">Бот для записи</b><small data-i="c3s">Клиент записывается сам</small></a>
+  </aside>
+</header>
+
+<div class="ticker" aria-hidden="true"><div class="track" data-i="tick"></div></div>
+
+<main>
+  <section class="band" id="uslugi" aria-labelledby="h-svc">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="t" id="h-svc" data-i="s0">Что я <em>делаю</em></h2>
+        <p data-i="s0p">Можно выбрать одну услугу или собрать всё вместе. Техническую часть я беру на себя, от вас понадобятся только фотографии, цены и немного информации о вашем деле.</p>
+      </div>
+      <ul class="svc">
+        <li><h3 data-i="s1">Профиль в Google Картах</h3><p data-i="s1p">Оформляю профиль: название, описание, услуги и цены, фотографии, контакты и часы работы. Помогаю с подтверждением профиля, чтобы клиентам было проще найти вас в Google и построить маршрут.</p></li>
+        <li><h3 data-i="s2">Сайт-визитка</h3><p data-i="s2p">Ваши услуги, цены, фотографии работ, адрес и запись на одной красивой странице. Сайт можно отправить клиенту ссылкой, разместить в Google или Instagram. Он доступен в любое время, даже когда вы заняты.</p></li>
+        <li><h3 data-i="s3">Бот для записи в Telegram</h3><p data-i="s3p">Клиент выбирает услугу и удобное время самостоятельно. Вы получаете информацию о записи, а бот помогает сократить переписку и не терять заявки, пока вы работаете.</p></li>
+        <li><h3 data-i="s4">Тексты и прайс</h3><p data-i="s4p">Оформляю описание услуг и прайс на русском и сербском языках. Чтобы информация была понятной и русскоязычным клиентам, и местным жителям.</p></li>
+        <li><h3><span class="free" data-i="free">Бесплатно</span><span data-i="s5">Каталог «Свои мастера»</span></h3><p data-i="s5p">Создаю страницу вашего профиля в каталоге мастеров Сербии. Ещё одно место, где потенциальные клиенты смогут найти вас, посмотреть услуги и связаться.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band shows" id="primery" aria-labelledby="h-ex">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="t" id="h-ex" data-i="e0">Как это <em>выглядит</em></h2>
+        <p data-i="e0p">Всё просто и понятно для клиента. Он находит вас в Google, знакомится с услугами на сайте и записывается в удобное время.</p>
+      </div>
+      <div class="phones">
+        <div class="ph"><figure><div class="frame"><img src="google.jpg" loading="lazy" alt="Botika — Google Maps"></div><figcaption><b data-i="e1">Google Карты</b><span data-i="e1p">Профиль с услугами, контактами, фотографиями и ссылкой на ваш сайт.</span></figcaption></figure></div>
+        <div class="ph"><figure><div class="frame"><img src="site.jpg" loading="lazy" alt="Сайт-визитка / website"></div><figcaption><b data-i="e2">Сайт-визитка</b><span data-i="e2p">Услуги и цены сразу перед глазами. Работы, контакты и запись в одном месте.</span></figcaption></figure></div>
+        <div class="ph"><figure><div class="frame"><img src="bot.jpg" loading="lazy" alt="Telegram bot"></div><figcaption><b data-i="e3">Бот для записи</b><span data-i="e3p">Клиент выбирает услугу и время. Вы получаете заявку, а при необходимости клиенту приходит напоминание.</span></figcaption></figure></div>
+      </div>
+      <p class="demo" data-i="demo">Сайт и бот на картинках — демонстрационный пример. Профиль в Google — настоящий.</p>
+      <p class="live" data-i="live">Живой пример — <a href="https://nasta11.github.io/mastera/m/viktoriya-podolog-subotitsa/">страница подолога Виктории</a> в каталоге «Свои мастера».</p>
+    </div>
+  </section>
+
+  <section class="band" id="kak" aria-labelledby="h-how">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="t" id="h-how" data-i="w0">Как мы <em>работаем</em></h2>
+        <p data-i="w0p">Обычно всё готово за несколько дней, в зависимости от объёма работы.</p>
+      </div>
+      <ol class="steps">
+        <li><h3 data-i="w1">Обсуждаем</h3><p data-i="w1p">Созваниваемся или переписываемся онлайн, а в Суботице можем встретиться лично. Вы рассказываете о своей работе и о том, что вам нужно.</p></li>
+        <li><h3 data-i="w2">Собираем материалы</h3><p data-i="w2p">Вы присылаете фотографии, цены и основную информацию. Я занимаюсь оформлением, текстами и технической частью.</p></li>
+        <li><h3 data-i="w3">Запускаем</h3><p data-i="w3p">Показываю готовый результат, вносим необходимые правки и запускаем. Вы получаете готовый инструмент, которым можно пользоваться.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band contact" id="kontakt" aria-labelledby="h-call">
+    <div class="wrap">
+      <h2 class="t" id="h-call" data-i="k0">Обсудим ваш <em>проект</em></h2>
+      <p class="sub" data-i="k0p">Стоимость зависит от того, что именно вам нужно. Обсудим задачу, я предложу решение и назову цену до начала работы. Никаких неожиданных расходов.</p>
+      <p class="name" data-i="kname">Анастасия · Сербия</p>
+      <a class="tel" href="tel:+381665796200">+381 66 579 6200</a>
+      <p class="who" data-i="kwho">Напишите или позвоните, расскажите о своём деле. Вместе решим, что действительно пригодится.</p>
+      <p class="langs" data-i="klang">Общаемся на русском, украинском и английском.</p>
+      <div class="actions"><a class="pill big" href="tel:+381665796200" data-i="call2">Позвонить</a></div>
+      <footer>
+        <span data-i="f1">Botika · Сербия</span>
+        <a href="https://nasta11.github.io/mastera/" data-i="f2">Каталог «Свои мастера»</a>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script>
+{
+const TICK={ru:["Google Карты","Сайт-визитка","Бот для записи","Прайс на сербском","Маникюр","Педикюр","Подология","Парикмахеры","Брови и ресницы","Массаж"],
+en:["Google Maps","Business website","Booking bot","Price lists","Manicure","Pedicure","Podology","Hairdressers","Brows & lashes","Massage"]};
+const EN={
+n1:"Services",n2:"Examples",n3:"How we work",n4:"Contact",call:"Call",call2:"Call",
+badge:"A digital studio for independent professionals",
+h1:"<span>Your business.</span> <em>Your style.</em> <span>Your online presence.</span>",
+lead:"Your business deserves a beautiful presence. Thoughtful digital solutions for professionals and specialists in Serbia: Google Maps, business websites and booking bots.",
+slogan:"Visibility. Convenience. Time for yourself and your work.",
+b1:"Discuss your project",b2:"See examples",meta:"Working online across Serbia",
+c0:"Three main services",c1:"Google Maps",c1s:"A profile people find in search",c2:"Business website",c2s:"Prices, portfolio and a booking button",c3:"Booking bot",c3s:"Clients book on their own",
+s0:"What I <em>do</em>",s0p:"Choose one service or combine them all. I take care of the technical side; all I need from you are photos, prices and a little information about your business.",
+s1:"Google Maps profile",s1p:"I set up your profile: name, description, services and prices, photos, contacts and opening hours. I help with verification so clients can easily find you on Google and get directions.",
+s2:"Business website",s2p:"Your services, prices, portfolio, address and booking on one beautiful page. Send it to clients as a link or add it to Google or Instagram. It works around the clock, even when you are busy.",
+s3:"Telegram booking bot",s3p:"Clients choose a service and a convenient time on their own. You get the booking details, and the bot cuts down on messaging so you don't miss requests while you work.",
+s4:"Texts and price lists",s4p:"I write service descriptions and price lists in Russian and Serbian, so both Russian-speaking clients and locals understand them.",
+free:"Free",s5:"«Svoi Mastera» catalog",s5p:"I create your page in the catalog of professionals in Serbia. One more place where potential clients can find you, see your services and get in touch.",
+e0:"What it <em>looks like</em>",e0p:"Simple and clear for your clients. They find you on Google, see your services on the website and book at a convenient time.",
+e1:"Google Maps",e1p:"A profile with services, contacts, photos and a link to your website.",
+e2:"Business website",e2p:"Services and prices at a glance. Portfolio, contacts and booking in one place.",
+e3:"Booking bot",e3p:"Clients choose a service and time. You get the request, and clients can receive a reminder.",
+demo:"The website and bot shown are a demo example. The Google profile is real.",
+live:'Live example: <a href="https://nasta11.github.io/mastera/m/viktoriya-podolog-subotitsa/">podologist Viktoria\'s page</a> in the «Svoi Mastera» catalog.',
+w0:"How we <em>work</em>",w0p:"It is usually ready within a few days, depending on the scope.",
+w1:"Discuss",w1p:"We talk by phone or online, or meet in person in Subotica. You tell me about your work and what you need.",
+w2:"Gather materials",w2p:"You send photos, prices and key information. I handle the design, texts and technical side.",
+w3:"Launch",w3p:"I show you the result, we make any changes and launch. You get a ready-to-use tool.",
+k0:"Let's discuss your <em>project</em>",k0p:"The price depends on what exactly you need. We discuss your task, I suggest a solution and name the price before we start. No unexpected costs.",
+kname:"Anastasia · Serbia",kwho:"Write or call and tell me about your business. Together we will decide what will really help.",
+klang:"We speak Russian, Ukrainian and English.",f1:"Botika · Serbia",f2:"«Svoi Mastera» catalog"};
+const els=[...document.querySelectorAll('[data-i]')];
+const RU={};els.forEach(e=>{if(e.dataset.i!=='tick')RU[e.dataset.i]=e.innerHTML});
+const tick=document.querySelector('.track');
+const btns=[...document.querySelectorAll('.lang button')];
+const titles={ru:document.title,en:"Botika studio — digital studio for independent professionals"};
+function set(l){
+  const D=l==='en'?EN:RU;
+  els.forEach(e=>{const k=e.dataset.i;if(k in D)e.innerHTML=D[k]});
+  const w=TICK[l].map(t=>'<span>'+t+'</span><span>·</span>').join('');
+  tick.innerHTML=w+w;
+  document.documentElement.lang=l;document.title=titles[l];
+  btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));
+  try{localStorage.setItem('botika-lang',l)}catch(e){}
+}
+btns.forEach(b=>b.addEventListener('click',()=>set(b.dataset.l)));
+let start='ru';
+if(location.hash==='#en')start='en';
+else{try{const v=localStorage.getItem('botika-lang');if(v==='en')start='en'}catch(e){}}
+set(start);
+}
+</script>
+</body>
+</html>
