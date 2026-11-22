@@ -119,7 +119,7 @@ function pageHtml({ city, service, cards, path, others }) {
   { "@type": "ListItem", position: 2, name: city, item: `${SITE}/mastera/${slug(city)}/` },
   { "@type": "ListItem", position: 3, name: service, item: url },
 ] }).replace(/</g, "\\u003c")}</script>
-<link href="${ELEGANT_FONT}" rel="stylesheet">
+<link href="${BOTIKA_FONT}" rel="stylesheet">
 <style>
 :root{--bg:#F6F1EC;--surface:#FFFFFF;--ink:#2A1F1C;--muted:#73655F;--line:#E6DCD4;--accent:#B4485E;--mint:#0B6E5B;--mint-soft:#E1F0EA}
 @media (prefers-color-scheme: dark){:root{--bg:#1A1514;--surface:#241D1B;--ink:#F3EAE6;--muted:#B4A59F;--line:#3A2F2C;--accent:#E87F93;--mint:#55CFB2;--mint-soft:#1E302A;color-scheme:dark}}
@@ -156,7 +156,7 @@ td small{display:block;color:var(--muted);font-size:13px}
 .more{font-size:14px;color:var(--muted)}
 .more ul{padding-left:18px;margin:6px 0 0}
 </style>
-<style>${LIST_ELEGANT_CSS}</style>
+<style>${LIST_STYLE}</style>
 </head>
 <body>
 <div class="wrap">
@@ -340,6 +340,33 @@ td.p{font-family:var(--serif);font-weight:500;font-size:19px}
 .leaflet-popup-content{font-family:inherit}
 .leaflet-popup-content button{color:#7A5C3E}
 `;
+
+const BOTIKA_FONT = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Golos+Text:wght@400;500;600&display=swap";
+// «Botika studio» look, the same as /usluge/: powder, plum ink, berry, sage; Playfair Display + Golos Text.
+// It sits on top of LIST_ELEGANT_CSS. mastera/index.html carries a copy (marked "botika"); keep the two in step.
+const LIST_BOTIKA_CSS = `
+:root{--bg:#F2EDEA;--surface:#FBF8F6;--ink:#1F1418;--muted:#76666B;--line:#E6DBD6;--accent:#8A3A50;--accent-ink:#FBF8F6;--soft:#EDE3DF;--mint:#1F1418;--mint-soft:#E6ECE6;--gold:#8A3A50;--serif:"Playfair Display",Georgia,serif;--display:var(--serif);--body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1A1014;--surface:#24161C;--ink:#F2E6E9;--muted:#B9A5AB;--line:#3A2A31;--accent:#E3A0B3;--accent-ink:#1A1014;--soft:#2E1E25;--mint:#F2E6E9;--mint-soft:#202620;--gold:#E3A0B3;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1A1014;--surface:#24161C;--ink:#F2E6E9;--muted:#B9A5AB;--line:#3A2A31;--accent:#E3A0B3;--accent-ink:#1A1014;--soft:#2E1E25;--mint:#F2E6E9;--mint-soft:#202620;--gold:#E3A0B3;color-scheme:dark}
+body{font-family:var(--body);letter-spacing:0}
+h1{font-weight:400;letter-spacing:-.03em;line-height:1}
+h1::after{background:var(--accent);width:40px}
+h2,.who b,.who h2,.join b{font-weight:400;letter-spacing:-.015em}
+.card,section,.state,.empty,#map{border-radius:22px}
+.card,section,.state{border-color:transparent;box-shadow:0 1px 0 var(--line),0 18px 40px rgba(31,20,24,.05)}
+.ava{background:linear-gradient(135deg,#E3B7C1,#8A3A50)!important;color:#fff!important;border:0;padding:0}
+.lbl,.bh,caption{color:var(--muted);font:italic 400 15px/1.2 var(--serif);letter-spacing:0;text-transform:none}
+.tag{color:var(--accent);border-color:var(--line);letter-spacing:.04em}
+td:first-child{font-family:var(--body);font-size:15px}
+td.p{font-family:var(--body);font-weight:600;font-size:15px}
+.place{background:var(--soft);border-radius:14px}
+.join{border-radius:26px}
+.btn,.cta,.demo{text-transform:none;letter-spacing:0;font-size:15px}
+.btn,.cta{font-weight:500}
+.cta:hover{background:var(--accent)}
+.leaflet-popup-content button{color:#8A3A50}
+`;
+const LIST_STYLE = LIST_ELEGANT_CSS + LIST_BOTIKA_CSS;
 const THEME_CSS = {
   // «Изящный»: ivory and champagne, thin gold lines, a light high-contrast serif, lots of air.
   elegant: `
@@ -376,6 +403,29 @@ h2{font:500 12px/1 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;letter-sp
 .share{border:1px solid var(--leader);box-shadow:none}
 `,
 };
+
+
+// «Botika studio» look for a master's page: the elegant layout, recoloured and retyped like /usluge/.
+THEME_FONTS.botika = BOTIKA_FONT;
+THEME_CSS.botika = THEME_CSS.elegant + `
+:root{--powder:#F2EDEA;--paper:#FBF8F6;--plum:#1F1418;--muted:#76666B;--berry:#8A3A50;--sage:#E6ECE6;--leader:#E2D5D0;--select:#EBD3DA;--gold:#8A3A50;--serif:"Playfair Display",Georgia,serif}
+@media (prefers-color-scheme: dark){:root{--powder:#1A1014;--paper:#24161C;--plum:#F2E6E9;--muted:#B9A5AB;--berry:#E3A0B3;--sage:#202620;--leader:#3A2A31;--select:#4A2A36;--gold:#E3A0B3}}
+body{font-family:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:0}
+.ava{border:0;padding:0;background:linear-gradient(135deg,#E3B7C1,#8A3A50)!important;color:#fff!important;font:400 44px var(--serif)}
+h1{font:400 clamp(36px,10vw,48px)/1 var(--serif);letter-spacing:-.03em}
+h1::after{width:40px;background:var(--berry)}
+.card,.card.sage{border-radius:24px;border:0;box-shadow:0 1px 0 var(--leader),0 18px 40px rgba(31,20,24,.05)}
+h2,.works-h{font:italic 400 18px/1.2 var(--serif);letter-spacing:0;text-transform:none;color:var(--muted)}
+.row .n{font:400 15px/1.35 "Golos Text",system-ui,sans-serif}
+.row .p{font:600 15px "Golos Text",system-ui,sans-serif}
+.row .dots{border-bottom-color:var(--leader);opacity:1}
+.works img{border-radius:14px}
+.map{border-radius:18px;filter:saturate(.6) sepia(.08)}
+.uses span{font:400 14px "Golos Text",system-ui,sans-serif}
+.book{letter-spacing:0;text-transform:none;font-size:16px;box-shadow:0 10px 28px rgba(31,20,24,.22)}
+.bar{background:linear-gradient(rgba(242,237,234,0),var(--powder) 35%)}
+@media (prefers-color-scheme: dark){.bar{background:linear-gradient(rgba(26,16,20,0),var(--powder) 35%)}}
+`;
 
 function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
   const url = `${SITE}${m.path}`;
@@ -436,7 +486,7 @@ function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
     ],
   };
   const json = (o) => JSON.stringify(o).replace(/</g, "\\u003c");
-  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()] || "elegant";
+  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()] || "botika";
 
   return `<!doctype html>
 <html lang="ru">
@@ -612,7 +662,7 @@ function shell({ title: pageTitle, h1, description, path, ld, crumbs, body }) {
 <meta property="og:image" content="${SITE}/mastera/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 ${ld.map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, "\\u003c")}</script>`).join("\n")}
-<link href="${ELEGANT_FONT}" rel="stylesheet">
+<link href="${BOTIKA_FONT}" rel="stylesheet">
 <style>
 :root{--bg:#F6F1EC;--surface:#FFFFFF;--ink:#2A1F1C;--muted:#73655F;--line:#E6DCD4;--accent:#B4485E;--mint:#0B6E5B;--mint-soft:#E1F0EA}
 @media (prefers-color-scheme: dark){:root{--bg:#1A1514;--surface:#241D1B;--ink:#F3EAE6;--muted:#B4A59F;--line:#3A2F2C;--accent:#E87F93;--mint:#55CFB2;--mint-soft:#1E302A;color-scheme:dark}}
@@ -634,7 +684,7 @@ section li{margin:4px 0}
 .cta{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:10px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none}
 .more{font-size:14px;color:var(--muted)}
 </style>
-<style>${LIST_ELEGANT_CSS}</style>
+<style>${LIST_STYLE}</style>
 </head>
 <body>
 <div class="wrap">
