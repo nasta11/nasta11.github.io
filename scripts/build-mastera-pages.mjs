@@ -293,6 +293,51 @@ function renderPng(html, out) {
   }
 }
 
+// Optional look for a single master's page, keyed by the page slug (/mastera/m/<slug>/).
+// A theme only adds CSS on top of the shared page, so content and data stay the same.
+const THEMES = {
+  "viktoriya-podolog-subotitsa": "elegant",
+};
+const THEME_FONTS = {
+  elegant: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap",
+};
+const THEME_CSS = {
+  // «Изящный»: ivory and champagne, thin gold lines, a light high-contrast serif, lots of air.
+  elegant: `
+:root{--powder:#F8F4EE;--paper:#FFFDF9;--plum:#2B2420;--muted:#8B7E73;--berry:#7A5C3E;--sage:#F2ECE3;--leader:#D9CBB8;--select:#EADCC6;--gold:#B8976A;--serif:"Cormorant Garamond",Lora,Georgia,serif}
+@media (prefers-color-scheme: dark){:root{--powder:#17130F;--paper:#211B16;--plum:#F3EBE1;--muted:#B3A595;--berry:#D9B98A;--sage:#1E1914;--leader:#4A3F33;--select:#4A3A28;--gold:#C9A877}}
+body{letter-spacing:.1px}
+.wrap{gap:30px}
+.who{flex-direction:column;text-align:center;gap:16px;margin-top:40px}
+.ava{width:112px;height:112px;border:1px solid var(--gold);padding:5px;background:var(--paper);font:500 44px var(--serif);color:var(--gold)}
+h1{font:500 clamp(34px,10vw,44px)/1.05 var(--serif);letter-spacing:.2px}
+h1::after{content:"";display:block;width:56px;height:1px;background:var(--gold);margin:16px auto 0}
+.lead{font-size:14px;letter-spacing:.3px;line-height:1.7}
+.card,.card.sage{border-radius:6px;border:1px solid var(--leader);padding:28px 24px;box-shadow:0 1px 0 rgba(43,36,32,.02)}
+h2{font:500 12px/1 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-align:center;margin:0 0 18px}
+.works-h{font:500 12px/1 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--gold);text-align:center}
+.works img{border-radius:6px}
+.row{padding:12px 0}
+.row .n{font:400 19px/1.25 var(--serif)}
+.row .dots{border-bottom:1px dotted var(--gold);opacity:.7}
+.row .p{font:500 20px var(--serif)}
+.note{text-align:center;font-style:italic;font-family:var(--serif);font-size:15px;margin-top:12px}
+.card.sage p{text-align:center;font:400 19px/1.4 var(--serif)}
+.map{border-radius:4px;filter:grayscale(.85) sepia(.25) contrast(.95)}
+@media (prefers-color-scheme: dark){.map{filter:grayscale(.9) sepia(.2) brightness(.8)}}
+.route{display:block;text-align:center;font-weight:500;letter-spacing:.5px;text-decoration:none;border-bottom:0}
+.uses{justify-content:center}
+.uses span{background:transparent;border:1px solid var(--leader);border-radius:999px;font:400 17px var(--serif);padding:6px 16px}
+.review{text-align:center}
+.review p{font:italic 400 19px/1.45 var(--serif)}
+.more,.join,.foot{text-align:center}
+.bar{background:linear-gradient(rgba(248,244,238,0),var(--powder) 35%)}
+@media (prefers-color-scheme: dark){.bar{background:linear-gradient(rgba(23,19,15,0),var(--powder) 35%)}}
+.book{background:var(--plum);color:var(--powder);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;font-size:14px;box-shadow:0 10px 28px rgba(43,36,32,.22)}
+.share{border:1px solid var(--leader);box-shadow:none}
+`,
+};
+
 function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
   const url = `${SITE}${m.path}`;
   const cityIn = CITY_IN[m.city] ? `в ${CITY_IN[m.city]}` : m.city;
@@ -352,6 +397,7 @@ function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
     ],
   };
   const json = (o) => JSON.stringify(o).replace(/</g, "\\u003c");
+  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()];
 
   return `<!doctype html>
 <html lang="ru">
@@ -378,6 +424,7 @@ ${og ? `<!-- og-src:${og.hash} -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&display=swap" rel="stylesheet">
+${theme && THEME_FONTS[theme] ? `<link href="${THEME_FONTS[theme]}" rel="stylesheet">` : ""}
 <style>
 :root{--powder:#F7EEF0;--paper:#FFFFFF;--plum:#2E1A2B;--muted:#7C6676;--berry:#8C2F5E;--sage:#E3ECE2;--leader:#CDB8C3;--select:#EBC6D3;--serif:Lora,Georgia,"Times New Roman",serif;--ease-out:cubic-bezier(0.23,1,0.32,1)}
 @media (prefers-color-scheme: dark){:root{--powder:#1C1419;--paper:#2A1F27;--plum:#F5E9F0;--muted:#BBA5B4;--berry:#C9558E;--sage:#22302A;--leader:#5A4554;--select:#5C2D47;color-scheme:dark}}
@@ -435,6 +482,7 @@ h2{margin:0 0 8px;font:600 21px/1.2 var(--serif)}
 .share:active{transform:scale(.95)}
 @media (prefers-reduced-motion: no-preference){.book,.share{transition:transform 160ms var(--ease-out)}}
 </style>
+${theme && THEME_CSS[theme] ? `<style>${THEME_CSS[theme]}</style>` : ""}
 </head>
 <body>
 ${photos.length ? `${lessons ? '<h2 class="works-h">Как проходят занятия</h2>' : ""}<div class="works">${photos.map((p, k) => `<a href="${esc(p)}" target="_blank" rel="noopener"><img src="${esc(p)}" alt="${lessons ? "Фото" : "Работа"} ${k + 1}" ${k ? 'loading="lazy"' : ""}></a>`).join("")}</div>` : ""}
