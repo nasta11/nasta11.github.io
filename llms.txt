@@ -1,6 +1,6 @@
 # Свои мастера (Botika)
 
-> Бесплатный каталог мастеров и специалистов в Сербии: Суботица, Нови-Сад, Белград, Becej, Backo Petrovo Selo. У каждого мастера — точные цены на каждую услугу, где он принимает, фото работ и запись в один клик (Telegram, WhatsApp, Viber). Без комиссий. Сейчас 16 мастеров.
+> Бесплатный каталог мастеров и специалистов в Сербии: Суботица, Нови-Сад, Белград, Becej, Backo Petrovo Selo. У каждого мастера — точные цены на каждую услугу, где он принимает, фото работ и запись в один клик (Telegram, WhatsApp, Viber). Без комиссий. Сейчас 17 мастеров.
 
 Мастера добавляются бесплатно через Telegram-бота https://t.me/svoi_mastera_bot. Каталог обновляется автоматически.
 
@@ -10,7 +10,7 @@
 
 ## Города
 - [Мастера в Суботице](https://nasta11.github.io/mastera/subotitsa/): 8 мастеров
-- [Мастера в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/): 4 мастера
+- [Мастера в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/): 5 мастеров
 - [Мастера в Белграде](https://nasta11.github.io/mastera/belgrad/): 3 мастера
 - [Мастера — Becej, Backo Petrovo Selo](https://nasta11.github.io/mastera/becej-backo-petrovo-selo/): 1 мастер
 
@@ -22,6 +22,7 @@
 - [Косметолог в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/kosmetolog/): 1 мастер, цены от 8 000 дин
 - [Массаж в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/massazh/): 1 мастер, цены от 3 800 дин
 - [Волосы в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/volosy/): 1 мастер, цены от 4 000 дин
+- [Занятия и мастер-классы в Нови-Саде](https://nasta11.github.io/mastera/novi-sad/zanyatiya-i-master-klassy/): 1 мастер, цены от 1 200 дин
 - [Домашняя еда и полуфабрикаты в Суботице](https://nasta11.github.io/mastera/subotitsa/domashnyaya-eda-i-polufabrikaty/): 1 мастер, цены от 100 дин
 - [IT, сайты и дизайн в Суботице](https://nasta11.github.io/mastera/subotitsa/it-sayty-i-dizayn/): 1 мастер, цены от 10 €
 - [Маникюр и педикюр в Суботице](https://nasta11.github.io/mastera/subotitsa/manikyur-i-pedikyur/): 1 мастер, цены от 1 500 дин
