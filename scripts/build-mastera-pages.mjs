@@ -365,6 +365,15 @@ td.p{font-family:var(--body);font-weight:600;font-size:15px}
 .btn,.cta{font-weight:500}
 .cta:hover{background:var(--accent)}
 .leaflet-popup-content button{color:#8A3A50}
+.chips button[aria-pressed="true"],.view button[aria-pressed="true"],.langs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.join{background:var(--deep);color:#F7EEF0}
+.join a:not(.btn){color:#F7EEF0}
+.btn{background:#F7EEF0;color:var(--deep)}
+.cta{background:var(--accent);color:var(--accent-ink)}
+.cta:hover{background:var(--deep)}
+:root{--deep:#4A2433}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--deep:#5A2C3E}}
+:root[data-theme="dark"]{--deep:#5A2C3E}
 `;
 const LIST_STYLE = LIST_ELEGANT_CSS + LIST_BOTIKA_CSS;
 const THEME_CSS = {
@@ -424,7 +433,8 @@ h2,.works-h{font:italic 400 18px/1.2 var(--serif);letter-spacing:0;text-transfor
 .uses span{font:400 14px "Golos Text",system-ui,sans-serif}
 .book{letter-spacing:0;text-transform:none;font-size:16px;box-shadow:0 10px 28px rgba(31,20,24,.22)}
 .bar{background:linear-gradient(rgba(242,237,234,0),var(--powder) 35%)}
-@media (prefers-color-scheme: dark){.bar{background:linear-gradient(rgba(26,16,20,0),var(--powder) 35%)}}
+@media (prefers-color-scheme: dark){.bar{background:linear-gradient(rgba(26,16,20,0),var(--powder) 35%)}}.book{background:var(--berry);color:#FBF8F6}
+@media (prefers-color-scheme: dark){.book{color:#1A1014}}
 `;
 
 function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
