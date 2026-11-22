@@ -156,7 +156,7 @@ td small{display:block;color:var(--muted);font-size:13px}
 .more{font-size:14px;color:var(--muted)}
 .more ul{padding-left:18px;margin:6px 0 0}
 </style>
-<style>${LIST_STYLE}</style>
+<style>${LIST_ELEGANT_CSS}</style>
 </head>
 <body>
 <div class="wrap">
@@ -340,21 +340,6 @@ td.p{font-family:var(--serif);font-weight:500;font-size:19px}
 .leaflet-popup-content{font-family:inherit}
 .leaflet-popup-content button{color:#7A5C3E}
 `;
-
-// Colours of /usluge/ (powder, plum ink, berry, sage) on top of the elegant look; layout and fonts stay.
-// mastera/index.html carries a copy (marked "usluge colours"); keep the two in step.
-const LIST_COLOR_CSS = `
-:root{--bg:#F2EDEA;--surface:#FBF8F6;--ink:#1F1418;--muted:#76666B;--line:#E6DBD6;--accent:#8A3A50;--accent-ink:#FBF8F6;--soft:#EDE3DF;--mint:#4A2433;--mint-soft:#E6ECE6;--gold:#8A3A50}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1A1014;--surface:#24161C;--ink:#F2E6E9;--muted:#B9A5AB;--line:#3A2A31;--accent:#E3A0B3;--accent-ink:#1A1014;--soft:#2E1E25;--mint:#5A2C3E;--mint-soft:#202620;--gold:#E3A0B3;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#1A1014;--surface:#24161C;--ink:#F2E6E9;--muted:#B9A5AB;--line:#3A2A31;--accent:#E3A0B3;--accent-ink:#1A1014;--soft:#2E1E25;--mint:#5A2C3E;--mint-soft:#202620;--gold:#E3A0B3;color-scheme:dark}
-.chips button[aria-pressed="true"],.view button[aria-pressed="true"],.langs button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.join{background:var(--mint);color:#F7EEF0}
-.join a:not(.btn){color:#F7EEF0}
-.btn{background:#F7EEF0;color:#4A2433}
-.cta{background:var(--accent);color:var(--accent-ink)}
-.leaflet-popup-content button{color:#8A3A50}
-`;
-const LIST_STYLE = LIST_ELEGANT_CSS + LIST_COLOR_CSS;
 const THEME_CSS = {
   // «Изящный»: ivory and champagne, thin gold lines, a light high-contrast serif, lots of air.
   elegant: `
@@ -391,19 +376,6 @@ h2{font:500 12px/1 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;letter-sp
 .share{border:1px solid var(--leader);box-shadow:none}
 `,
 };
-
-
-// Master pages in the /usluge/ colours: the elegant look, recoloured only.
-THEME_FONTS.usluge = THEME_FONTS.elegant;
-THEME_CSS.usluge = THEME_CSS.elegant + `
-:root{--powder:#F2EDEA;--paper:#FBF8F6;--plum:#1F1418;--muted:#76666B;--berry:#8A3A50;--sage:#E6ECE6;--leader:#E2D5D0;--select:#EBD3DA;--gold:#8A3A50}
-@media (prefers-color-scheme: dark){:root{--powder:#1A1014;--paper:#24161C;--plum:#F2E6E9;--muted:#B9A5AB;--berry:#E3A0B3;--sage:#202620;--leader:#3A2A31;--select:#4A2A36;--gold:#E3A0B3}}
-.bar{background:linear-gradient(rgba(242,237,234,0),var(--powder) 35%)}
-@media (prefers-color-scheme: dark){.bar{background:linear-gradient(rgba(26,16,20,0),var(--powder) 35%)}}
-.book{background:var(--berry);color:#FBF8F6}
-@media (prefers-color-scheme: dark){.book{color:#1A1014}}
-.map{filter:saturate(.6) sepia(.08)}
-`;
 
 function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
   const url = `${SITE}${m.path}`;
@@ -464,7 +436,7 @@ function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
     ],
   };
   const json = (o) => JSON.stringify(o).replace(/</g, "\\u003c");
-  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()] || "usluge";
+  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()] || "elegant";
 
   return `<!doctype html>
 <html lang="ru">
@@ -662,7 +634,7 @@ section li{margin:4px 0}
 .cta{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:10px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none}
 .more{font-size:14px;color:var(--muted)}
 </style>
-<style>${LIST_STYLE}</style>
+<style>${LIST_ELEGANT_CSS}</style>
 </head>
 <body>
 <div class="wrap">
