@@ -15,7 +15,7 @@
 <meta property="og:image" content="https://nasta11.github.io/mastera/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Свои мастера","item":"https://nasta11.github.io/mastera/"},{"@type":"ListItem","position":2,"name":"Нови-Сад","item":"https://nasta11.github.io/mastera/novi-sad/"},{"@type":"ListItem","position":3,"name":"Волосы","item":"https://nasta11.github.io/mastera/novi-sad/volosy/"}]}</script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F6F1EC;--surface:#FFFFFF;--ink:#2A1F1C;--muted:#73655F;--line:#E6DCD4;--accent:#B4485E;--mint:#0B6E5B;--mint-soft:#E1F0EA}
 @media (prefers-color-scheme: dark){:root{--bg:#1A1514;--surface:#241D1B;--ink:#F3EAE6;--muted:#B4A59F;--line:#3A2F2C;--accent:#E87F93;--mint:#55CFB2;--mint-soft:#1E302A;color-scheme:dark}}
@@ -84,6 +84,27 @@ td.p{font-family:var(--serif);font-weight:500;font-size:19px}
 .more,.pagelink{color:var(--accent)}
 .leaflet-popup-content{font-family:inherit}
 .leaflet-popup-content button{color:#7A5C3E}
+
+:root{--bg:#F2EDEA;--surface:#FBF8F6;--ink:#1F1418;--muted:#76666B;--line:#E6DBD6;--accent:#8A3A50;--accent-ink:#FBF8F6;--soft:#EDE3DF;--mint:#1F1418;--mint-soft:#E6ECE6;--gold:#8A3A50;--serif:"Playfair Display",Georgia,serif;--display:var(--serif);--body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1A1014;--surface:#24161C;--ink:#F2E6E9;--muted:#B9A5AB;--line:#3A2A31;--accent:#E3A0B3;--accent-ink:#1A1014;--soft:#2E1E25;--mint:#F2E6E9;--mint-soft:#202620;--gold:#E3A0B3;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1A1014;--surface:#24161C;--ink:#F2E6E9;--muted:#B9A5AB;--line:#3A2A31;--accent:#E3A0B3;--accent-ink:#1A1014;--soft:#2E1E25;--mint:#F2E6E9;--mint-soft:#202620;--gold:#E3A0B3;color-scheme:dark}
+body{font-family:var(--body);letter-spacing:0}
+h1{font-weight:400;letter-spacing:-.03em;line-height:1}
+h1::after{background:var(--accent);width:40px}
+h2,.who b,.who h2,.join b{font-weight:400;letter-spacing:-.015em}
+.card,section,.state,.empty,#map{border-radius:22px}
+.card,section,.state{border-color:transparent;box-shadow:0 1px 0 var(--line),0 18px 40px rgba(31,20,24,.05)}
+.ava{background:linear-gradient(135deg,#E3B7C1,#8A3A50)!important;color:#fff!important;border:0;padding:0}
+.lbl,.bh,caption{color:var(--muted);font:italic 400 15px/1.2 var(--serif);letter-spacing:0;text-transform:none}
+.tag{color:var(--accent);border-color:var(--line);letter-spacing:.04em}
+td:first-child{font-family:var(--body);font-size:15px}
+td.p{font-family:var(--body);font-weight:600;font-size:15px}
+.place{background:var(--soft);border-radius:14px}
+.join{border-radius:26px}
+.btn,.cta,.demo{text-transform:none;letter-spacing:0;font-size:15px}
+.btn,.cta{font-weight:500}
+.cta:hover{background:var(--accent)}
+.leaflet-popup-content button{color:#8A3A50}
 </style>
 </head>
 <body>
