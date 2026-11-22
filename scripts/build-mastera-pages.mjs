@@ -6,8 +6,11 @@
 //   node scripts/build-mastera-pages.mjs            fetch masters from the API
 //   node scripts/build-mastera-pages.mjs data.json  use a saved API answer instead
 
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync, existsSync, readdirSync, statSync } from "node:fs";
+import { join, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { tmpdir } from "node:os";
 
 const API = "https://lifearchive-platform.vercel.app/api/mastera";
 const SITE = "https://nasta11.github.io";
@@ -186,7 +189,111 @@ document.addEventListener("click", function (e) {
 
 const isHttps = (u) => /^https:\/\/[^\s"<>]+$/.test(String(u || ""));
 
-function masterPageHtml(m, i, { categoryPath, neighbours }) {
+// A price as HTML: the number in the serif, "от" and the currency smaller and quieter.
+const moneyHtml = (p) => {
+  const amount = p.priceTo ? `${num(p.price)}–${num(p.priceTo)}` : `${p.from ? "<small>от</small> " : ""}${num(p.price)}`;
+  return `${amount} <small>${p.currency === "€" ? "€" : "дин"}</small>`;
+};
+
+// Lessons and sessions are chosen by the person and the room, not by "works":
+// their photo strip gets its own heading and the photos are not called works.
+const LESSONS = ["Репетиторы и языки", "Занятия и мастер-классы", "Спорт и фитнес", "Психолог"];
+
+// "Русский, Srpski" → "русский, srpski": language names are lower case mid-sentence.
+const langs = (s) => String(s || "").split(/\s*,\s*/).filter(Boolean).map((l) => l.toLowerCase()).join(", ");
+
+const ICON_TG = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4 3 11l6 2.5L18 7l-7 8 7 5z"/></svg>';
+const ICON_SHARE = '<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7.5 7.5 4.5-4.5 4.5 4.5"/><path d="M8 11H6a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-2"/></svg>';
+
+// ---------------------------------------------------------------------------
+// The picture a messenger shows when someone sends a master's link
+// (og:image, 1200×630): name, what they do, the lowest price, address and
+// the first work photo (or the first prices when there is no photo yet).
+// Drawn by headless Chrome, which GitHub's runners have; redrawn only when
+// the card changes, so an hourly run with no changes commits nothing.
+
+const OG_VERSION = "1";
+
+function ogCardHtml(m, i) {
+  const cityIn = CITY_IN[m.city] ? `в ${CITY_IN[m.city]}` : m.city;
+  const photo = (Array.isArray(m.photos) ? m.photos : []).find(isHttps);
+  const prices = (m.prices || []).filter((p) => p && p.name && Number(p.price) > 0).slice(0, 4);
+  const from = cheapest([m]).match(/^от (.+) (дин|€)$/);
+  const avatar = isHttps(m.photo)
+    ? `<img class="ava" src="${esc(m.photo)}" alt="">`
+    : `<div class="ava" style="background:${PAL[i % PAL.length]}">${esc((m.name || "?").charAt(0))}</div>`;
+  const side = photo
+    ? `<img class="side photo" src="${esc(photo)}" alt="">`
+    : prices.length
+      ? `<div class="side list">${prices.map((p) => `<div class="row"><span class="n">${esc(p.name)}</span><span class="p">${moneyHtml(p)}</span></div>`).join("")}</div>`
+      : "";
+  const size = String(m.name || "").length > 20 ? 58 : 72;
+  return `<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{background:#F7EEF0;color:#2E1A2B;font-family:system-ui,-apple-system,"Segoe UI",Inter,"DejaVu Sans",sans-serif;display:flex;gap:56px;padding:64px 64px 60px 80px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
+.ava{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 40px Lora,Georgia,serif;color:#fff;object-fit:cover;box-shadow:0 0 0 5px #fff}
+h1{margin:22px 0 0;font:600 ${size}px/1.04 Lora,Georgia,serif;letter-spacing:-.5px;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sub{margin:14px 0 0;font-size:30px;line-height:1.3;color:#7C6676}
+.from{display:flex;align-items:baseline;gap:12px;color:#7C6676;font-size:28px}
+.from b{font:600 56px Lora,Georgia,serif;color:#8C2F5E}
+.foot{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:22px;color:#7C6676}
+.foot .brand{margin-left:auto;font-weight:600;color:#2E1A2B;white-space:nowrap}
+.foot .addr{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.side{width:400px;flex:none;border-radius:32px}
+.photo{height:100%;object-fit:cover;background:#EEDDE3}
+.list{background:#fff;padding:30px 30px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;font-size:22px;line-height:1.25}
+.row+.row{border-top:2px dotted #CDB8C3}
+.row .p{font:600 24px Lora,Georgia,serif;white-space:nowrap}
+.row .p small{font:400 18px system-ui,sans-serif;color:#7C6676}
+</style></head>
+<body>
+<div class="main">
+  <div>${avatar}
+    <h1>${esc(m.name)}</h1>
+    <p class="sub">${m.headline ? esc(m.headline) : `${esc(m.service)} ${esc(cityIn)}`}</p>
+  </div>
+  <div>
+    ${from ? `<div class="from">от <b>${esc(from[1])}</b> ${esc(from[2])}</div>` : ""}
+    <div class="foot">${m.placeNote ? `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8C2F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg><span class="addr">${esc(m.placeNote)}</span>` : ""}<span class="brand">Свои мастера · Botika</span></div>
+  </div>
+</div>
+${side}
+</body></html>
+`;
+}
+
+// The first Chrome that works is kept; if none does, pages fall back to the first work photo.
+let chrome;
+function renderPng(html, out) {
+  if (chrome === false) return false;
+  const dir = mkdtempSync(join(tmpdir(), "og-"));
+  const src = join(dir, "og.html");
+  writeFileSync(src, html);
+  const bins = chrome ? [chrome] : [process.env.CHROME, "google-chrome", "google-chrome-stable", "chromium", "chromium-browser"].filter(Boolean);
+  try {
+    for (const bin of bins) {
+      try {
+        execFileSync(bin, [
+          "--headless=new", "--no-sandbox", "--disable-gpu", "--hide-scrollbars", "--force-device-scale-factor=1",
+          "--window-size=1200,630", "--virtual-time-budget=15000", `--screenshot=${out}`, `file://${src}`,
+        ], { stdio: "ignore", timeout: 90_000 });
+        if (existsSync(out)) { chrome = bin; return true; }
+      } catch { /* try the next one */ }
+    }
+    if (!chrome) { chrome = false; console.warn("No headless Chrome: link previews use the first work photo."); }
+    return false;
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
   const url = `${SITE}${m.path}`;
   const cityIn = CITY_IN[m.city] ? `в ${CITY_IN[m.city]}` : m.city;
   const h1 = m.name;
@@ -203,7 +310,8 @@ function masterPageHtml(m, i, { categoryPath, neighbours }) {
     : `<div class="ava" style="background:${PAL[i % PAL.length]}">${esc((m.name || "?").charAt(0))}</div>`;
   const uses = [m.devices, m.cosmetics].filter(Boolean).map((u) => `<span>${esc(u)}</span>`).join("");
   // Price list like a salon price card: name, dotted leader, price.
-  const rows = prices.map((p) => `<div class="row"><span class="n">${esc(p.name)}${p.duration ? `<small>${esc(p.duration)}</small>` : ""}</span><i class="dots" aria-hidden="true"></i><span class="p">${money(p)}</span></div>`).join("");
+  const rows = prices.map((p) => `<div class="row"><span class="n">${esc(p.name)}${p.duration ? `<small>${esc(p.duration)}</small>` : ""}</span><i class="dots" aria-hidden="true"></i><span class="p">${moneyHtml(p)}</span></div>`).join("");
+  const lessons = LESSONS.includes(m.service);
   // The sticky button says where it leads.
   const via = !href ? "" : /t\.me\//.test(href) ? " в Telegram" : /wa\.me|whatsapp/.test(href) ? " в WhatsApp" : /viber/.test(href) ? " в Viber" : "";
   const bookText = href && /^tel:/.test(href) ? "Позвонить" : `Записаться${via}`;
@@ -259,7 +367,11 @@ function masterPageHtml(m, i, { categoryPath, neighbours }) {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="profile">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${photos[0] ? esc(photos[0]) : `${SITE}/mastera/og.jpg`}">
+${og ? `<!-- og-src:${og.hash} -->
+<meta property="og:image" content="${esc(og.url)}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(m.name)} — ${esc(m.service)} ${esc(cityIn)}">` : `<meta property="og:image" content="${photos[0] ? esc(photos[0]) : `${SITE}/mastera/og.jpg`}">`}
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">${json(ld)}</script>
 <script type="application/ld+json">${json(crumbs)}</script>
@@ -267,34 +379,42 @@ function masterPageHtml(m, i, { categoryPath, neighbours }) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&display=swap" rel="stylesheet">
 <style>
-:root{--powder:#F7EEF0;--paper:#FFFFFF;--plum:#2E1A2B;--muted:#7C6676;--berry:#8C2F5E;--sage:#E3ECE2;--leader:#CDB8C3;--serif:Lora,Georgia,"Times New Roman",serif}
-@media (prefers-color-scheme: dark){:root{--powder:#1C1419;--paper:#2A1F27;--plum:#F5E9F0;--muted:#BBA5B4;--berry:#C9558E;--sage:#22302A;--leader:#5A4554;color-scheme:dark}}
+:root{--powder:#F7EEF0;--paper:#FFFFFF;--plum:#2E1A2B;--muted:#7C6676;--berry:#8C2F5E;--sage:#E3ECE2;--leader:#CDB8C3;--select:#EBC6D3;--serif:Lora,Georgia,"Times New Roman",serif;--ease-out:cubic-bezier(0.23,1,0.32,1)}
+@media (prefers-color-scheme: dark){:root{--powder:#1C1419;--paper:#2A1F27;--plum:#F5E9F0;--muted:#BBA5B4;--berry:#C9558E;--sage:#22302A;--leader:#5A4554;--select:#5C2D47;color-scheme:dark}}
 *{box-sizing:border-box}
+html{accent-color:var(--berry);caret-color:var(--berry)}
+::selection{background:var(--select);color:var(--plum)}
 body{margin:0;background:var(--powder);color:var(--plum);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;padding-bottom:104px}
-a{color:var(--berry)}
+a{color:var(--berry);text-underline-offset:3px}
 a:focus-visible,button:focus-visible{outline:3px solid var(--plum);outline-offset:3px}
+.works-h{margin:20px auto 0;padding:0 18px;max-width:560px;font:600 17px/1.2 var(--serif)}
 .works{display:flex;gap:8px;overflow-x:auto;padding:16px 16px 0;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.works-h+.works{padding-top:10px}
 .works a{flex:none;scroll-snap-align:start}
 .works img{height:240px;max-width:80vw;object-fit:cover;border-radius:22px;display:block;background:var(--paper)}
 .wrap{max-width:560px;margin:0 auto;padding:0 18px;display:flex;flex-direction:column;gap:22px}
 .who{display:flex;gap:14px;align-items:center;margin-top:20px}
 .ava{width:62px;height:62px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font:600 26px var(--serif);color:#fff;object-fit:cover;border:3px solid var(--paper)}
-h1{margin:0;font:600 clamp(26px,7.5vw,32px)/1.1 var(--serif);letter-spacing:-.3px}
+h1{margin:0;font:600 clamp(26px,7.5vw,32px)/1.1 var(--serif);letter-spacing:-.3px;text-wrap:balance}
 .lead{margin:3px 0 0;color:var(--muted);font-size:15px}
 .stars{color:#B8863B;font-weight:600}
 .job{display:inline-block;margin-top:6px;font-size:13px;color:var(--berry);background:var(--paper);border-radius:999px;padding:3px 10px}
 .card{background:var(--paper);border-radius:28px;padding:22px 20px}
 .card.sage{background:var(--sage)}
 h2{margin:0 0 8px;font:600 21px/1.2 var(--serif)}
-.row{display:flex;align-items:baseline;gap:8px;padding:10px 0}
+/* The price sits on the last line of a long name, like on a salon price card. */
+.row{display:flex;align-items:flex-end;align-items:last baseline;gap:8px;padding:10px 0}
 .row .n{flex:0 1 auto;min-width:0}
 .row .n small{display:block;color:var(--muted);font-size:13px}
 .row .dots{flex:1 1 16px;min-width:16px;border-bottom:2px dotted var(--leader);transform:translateY(-5px)}
-.row .p{flex:none;font:600 18px var(--serif);white-space:nowrap}
+.row .p{flex:none;font:600 18px var(--serif);white-space:nowrap;font-variant-numeric:lining-nums}
+.row .p small{font:400 14px system-ui,-apple-system,"Segoe UI",Inter,sans-serif;color:var(--muted)}
 .note{color:var(--muted);font-size:13px;margin:6px 0 0}
 .card p{margin:4px 0 0}
-.map{width:100%;height:190px;border:0;border-radius:18px;margin-top:14px;display:block}
-.route{display:inline-block;margin-top:12px;color:var(--plum);font-weight:600}
+/* OpenStreetMap's bright tiles, softened to sit on the sage card. */
+.map{width:100%;height:190px;border:0;border-radius:18px;margin-top:14px;display:block;filter:saturate(.55)}
+@media (prefers-color-scheme: dark){.map{filter:saturate(.5) brightness(.85)}}
+.route{display:inline-block;margin-top:8px;padding:6px 0;color:var(--berry);font-weight:600;text-decoration-thickness:1.5px}
 .uses{display:flex;flex-wrap:wrap;gap:8px}
 .uses span{background:var(--paper);border-radius:999px;padding:7px 14px;font-size:14px}
 .review{padding:10px 0;border-bottom:1px dotted var(--leader)}
@@ -307,17 +427,21 @@ h2{margin:0 0 8px;font:600 21px/1.2 var(--serif)}
 .foot{font-size:13px;color:var(--muted);text-align:center;margin:0}
 .bar{position:fixed;left:0;right:0;bottom:0;padding:14px 16px 18px;background:linear-gradient(rgba(247,238,240,0),var(--powder) 35%);display:flex;gap:10px;justify-content:center}
 @media (prefers-color-scheme: dark){.bar{background:linear-gradient(rgba(28,20,25,0),var(--powder) 35%)}}
-.book{flex:1;max-width:460px;display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:999px;background:var(--berry);color:#fff;font-weight:600;font-size:17px;text-decoration:none;box-shadow:0 8px 24px rgba(140,47,94,.28)}
-.share{width:54px;height:54px;flex:none;border-radius:50%;background:var(--paper);border:0;font-size:20px;color:var(--plum);cursor:pointer}
+.book{flex:1;max-width:460px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:54px;border-radius:999px;background:var(--berry);color:#fff;font-weight:600;font-size:17px;text-decoration:none;box-shadow:0 8px 24px rgba(140,47,94,.28)}
+.share{width:54px;height:54px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--paper);border:0;font-size:20px;color:var(--plum);cursor:pointer;box-shadow:0 8px 24px rgba(140,47,94,.16)}
 .share.done{font-size:14px;width:auto;padding:0 16px;border-radius:999px}
+/* A tap shows at once: the button gives a little under the finger. */
+.book:active{transform:scale(.97)}
+.share:active{transform:scale(.95)}
+@media (prefers-reduced-motion: no-preference){.book,.share{transition:transform 160ms var(--ease-out)}}
 </style>
 </head>
 <body>
-${photos.length ? `<div class="works">${photos.map((p, k) => `<a href="${esc(p)}" target="_blank" rel="noopener"><img src="${esc(p)}" alt="Работа ${k + 1}" ${k ? 'loading="lazy"' : ""}></a>`).join("")}</div>` : ""}
+${photos.length ? `${lessons ? '<h2 class="works-h">Как проходят занятия</h2>' : ""}<div class="works">${photos.map((p, k) => `<a href="${esc(p)}" target="_blank" rel="noopener"><img src="${esc(p)}" alt="${lessons ? "Фото" : "Работа"} ${k + 1}" ${k ? 'loading="lazy"' : ""}></a>`).join("")}</div>` : ""}
 <div class="wrap">
   <div class="who">${avatar}<div>
     <h1>${esc(h1)}</h1>
-    <p class="lead">${esc(m.service)} ${esc(cityIn)}.${m.languages ? ` Языки: ${esc(m.languages)}.` : ""}</p>
+    <p class="lead">${m.headline ? esc(m.headline) : `${esc(m.service)} ${esc(cityIn)}`}${m.languages ? `<br>Языки: ${esc(langs(m.languages))}` : ""}</p>
     ${rating.length ? `<p class="lead"><span class="stars">★ ${avg.toFixed(1)}</span>, ${reviews.length} отз.</p>` : ""}
     ${m.seeksJob ? '<span class="job">Ищет постоянную работу</span>' : ""}
   </div></div>
@@ -341,8 +465,8 @@ ${photos.length ? `<div class="works">${photos.map((p, k) => `<a href="${esc(p)}
   <p class="foot">Botika, каталог «Свои мастера», <a href="/mastera/o-proekte/">о проекте</a></p>
 </div>
 <div class="bar">
-  ${href ? `<a class="book" href="${esc(href)}" rel="noopener" data-zapis="${esc(m.name)}">${bookText}</a>` : ""}
-  <button class="share" type="button" id="share" aria-label="Поделиться страницей">↗</button>
+  ${href ? `<a class="book" href="${esc(href)}" rel="noopener" data-zapis="${esc(m.name)}">${/t\.me\//.test(href) ? ICON_TG : ""}${bookText}</a>` : ""}
+  <button class="share" type="button" id="share" aria-label="Поделиться страницей">${ICON_SHARE}</button>
 </div>
 <script>
 document.getElementById("share").addEventListener("click", function () {
@@ -573,7 +697,14 @@ async function main() {
   const pages = [...groups.values()].map((g) => ({ ...g, path: `/mastera/${slug(g.city)}/${slug(g.service)}/` }));
   pages.sort((a, b) => a.path.localeCompare(b.path));
 
-  for (const dir of oldPages(MASTERA)) rmSync(dir, { recursive: true, force: true });
+  // Link preview pictures drawn by earlier runs, kept by the card they were drawn from.
+  const ogCache = new Map();
+  for (const dir of oldPages(MASTERA)) {
+    const png = join(dir, "og.png");
+    const drawn = existsSync(png) && readFileSync(join(dir, "index.html"), "utf8").match(/<!-- og-src:([0-9a-f]+) -->/);
+    if (drawn) ogCache.set(resolve(dir), { hash: drawn[1], png: readFileSync(png) });
+    rmSync(dir, { recursive: true, force: true });
+  }
   for (const p of pages) {
     const others = pages.filter((o) => o !== p && (o.city === p.city || o.service === p.service)).slice(0, 12);
     const dir = join(ROOT, p.path);
@@ -587,7 +718,14 @@ async function main() {
       const neighbours = p.cards.filter((o) => o !== m).slice(0, 10);
       const dir = join(ROOT, m.path);
       mkdirSync(dir, { recursive: true });
-      writeFileSync(join(dir, "index.html"), masterPageHtml(m, i, { categoryPath: p.path, neighbours }));
+      const card = ogCardHtml(m, i);
+      const hash = createHash("sha1").update(OG_VERSION + card).digest("hex").slice(0, 12);
+      const png = join(dir, "og.png");
+      const cached = ogCache.get(resolve(dir));
+      if (cached && cached.hash === hash) writeFileSync(png, cached.png);
+      // The ?v= part makes messengers fetch the new picture when the card changes.
+      const og = existsSync(png) || renderPng(card, png) ? { hash, url: `${SITE}${m.path}og.png?v=${hash.slice(0, 8)}` } : null;
+      writeFileSync(join(dir, "index.html"), masterPageHtml(m, i, { categoryPath: p.path, neighbours, og }));
     });
   }
   // City answer pages, «О проекте» and llms.txt.
