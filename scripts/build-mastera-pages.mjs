@@ -119,6 +119,7 @@ function pageHtml({ city, service, cards, path, others }) {
   { "@type": "ListItem", position: 2, name: city, item: `${SITE}/mastera/${slug(city)}/` },
   { "@type": "ListItem", position: 3, name: service, item: url },
 ] }).replace(/</g, "\\u003c")}</script>
+<link href="${ELEGANT_FONT}" rel="stylesheet">
 <style>
 :root{--bg:#F6F1EC;--surface:#FFFFFF;--ink:#2A1F1C;--muted:#73655F;--line:#E6DCD4;--accent:#B4485E;--mint:#0B6E5B;--mint-soft:#E1F0EA}
 @media (prefers-color-scheme: dark){:root{--bg:#1A1514;--surface:#241D1B;--ink:#F3EAE6;--muted:#B4A59F;--line:#3A2F2C;--accent:#E87F93;--mint:#55CFB2;--mint-soft:#1E302A;color-scheme:dark}}
@@ -155,6 +156,7 @@ td small{display:block;color:var(--muted);font-size:13px}
 .more{font-size:14px;color:var(--muted)}
 .more ul{padding-left:18px;margin:6px 0 0}
 </style>
+<style>${LIST_ELEGANT_CSS}</style>
 </head>
 <body>
 <div class="wrap">
@@ -293,7 +295,8 @@ function renderPng(html, out) {
   }
 }
 
-// Optional look for a single master's page, keyed by the page slug (/mastera/m/<slug>/).
+// Look of a master's page, keyed by the page slug (/mastera/m/<slug>/); a page without
+// its own entry gets "elegant", the catalog-wide look.
 // A theme only adds CSS on top of the shared page, so content and data stay the same.
 const THEMES = {
   "viktoriya-podolog-subotitsa": "elegant",
@@ -301,6 +304,42 @@ const THEMES = {
 const THEME_FONTS = {
   elegant: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap",
 };
+// The same «изящный» look for the list pages (city + service, city, «О проекте»).
+// mastera/index.html carries a copy of this block (marked "elegant"); keep the two in step.
+const ELEGANT_FONT = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap";
+const LIST_ELEGANT_CSS = `
+:root{--bg:#F8F4EE;--surface:#FFFDF9;--ink:#2B2420;--muted:#8B7E73;--line:#E4D9CB;--accent:#7A5C3E;--accent-ink:#FFFDF9;--soft:#F2ECE3;--mint:#2B2420;--mint-soft:#F2ECE3;--gold:#B8976A;--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--display:var(--serif)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#17130F;--surface:#211B16;--ink:#F3EBE1;--muted:#B3A595;--line:#3A3129;--accent:#D9B98A;--accent-ink:#17130F;--soft:#2A221B;--mint:#F3EBE1;--mint-soft:#1E1914;--gold:#C9A877;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17130F;--surface:#211B16;--ink:#F3EBE1;--muted:#B3A595;--line:#3A3129;--accent:#D9B98A;--accent-ink:#17130F;--soft:#2A221B;--mint:#F3EBE1;--mint-soft:#1E1914;--gold:#C9A877;color-scheme:dark}
+body{letter-spacing:.1px}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(34px,9vw,44px);line-height:1.05;letter-spacing:.2px}
+h1::after{content:"";display:block;width:56px;height:1px;background:var(--gold);margin-top:14px}
+h2{font-family:var(--serif);font-weight:500;font-size:24px}
+.card,section,.state,.empty,#map{border-radius:6px}
+.card,section,.state{border-color:var(--line);box-shadow:0 1px 0 rgba(43,36,32,.02)}
+.who b,.who h2{font-family:var(--serif);font-weight:500;font-size:23px;line-height:1.15}
+.ava{background:var(--surface)!important;color:var(--gold)!important;border:1px solid var(--gold);padding:3px;font-family:var(--serif);font-weight:500;font-size:24px}
+.lbl,.bh,caption{color:var(--gold);font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+.tag{font-family:inherit;color:var(--gold);border-color:var(--gold);letter-spacing:.15em}
+.place{background:var(--soft);border-radius:4px}
+.uses span{background:transparent;border-color:var(--line);border-radius:999px}
+.uses span.dev::before{color:var(--gold)}
+td{border-bottom:1px dotted var(--line)}
+td:first-child{font-family:var(--serif);font-size:18px}
+td.p{font-family:var(--serif);font-weight:500;font-size:19px}
+.book .tg,.book a{font-family:inherit}
+.chips button,.view,.langs{background:transparent}
+.chips button[aria-pressed="true"],.view button[aria-pressed="true"],.langs button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.demo{font-family:inherit;background:var(--soft);color:var(--accent);border-radius:4px;letter-spacing:.18em}
+.join{background:var(--ink);color:var(--bg);border-radius:6px}
+.join a:not(.btn){color:var(--bg)}
+.join b{font-family:var(--serif);font-weight:500;font-size:22px}
+.btn{background:var(--bg);color:var(--ink);border-radius:999px;letter-spacing:.12em;text-transform:uppercase;font-size:13px;font-weight:500}
+.cta{background:var(--ink);color:var(--bg);border-radius:999px;letter-spacing:.12em;text-transform:uppercase;font-size:13px;font-weight:500}
+.more,.pagelink{color:var(--accent)}
+.leaflet-popup-content{font-family:inherit}
+.leaflet-popup-content button{color:#7A5C3E}
+`;
 const THEME_CSS = {
   // «Изящный»: ivory and champagne, thin gold lines, a light high-contrast serif, lots of air.
   elegant: `
@@ -397,7 +436,7 @@ function masterPageHtml(m, i, { categoryPath, neighbours, og }) {
     ],
   };
   const json = (o) => JSON.stringify(o).replace(/</g, "\\u003c");
-  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()];
+  const theme = THEMES[String(m.path || "").split("/").filter(Boolean).pop()] || "elegant";
 
   return `<!doctype html>
 <html lang="ru">
@@ -573,6 +612,7 @@ function shell({ title: pageTitle, h1, description, path, ld, crumbs, body }) {
 <meta property="og:image" content="${SITE}/mastera/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 ${ld.map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, "\\u003c")}</script>`).join("\n")}
+<link href="${ELEGANT_FONT}" rel="stylesheet">
 <style>
 :root{--bg:#F6F1EC;--surface:#FFFFFF;--ink:#2A1F1C;--muted:#73655F;--line:#E6DCD4;--accent:#B4485E;--mint:#0B6E5B;--mint-soft:#E1F0EA}
 @media (prefers-color-scheme: dark){:root{--bg:#1A1514;--surface:#241D1B;--ink:#F3EAE6;--muted:#B4A59F;--line:#3A2F2C;--accent:#E87F93;--mint:#55CFB2;--mint-soft:#1E302A;color-scheme:dark}}
@@ -594,6 +634,7 @@ section li{margin:4px 0}
 .cta{display:inline-flex;align-self:flex-start;align-items:center;min-height:44px;padding:10px 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;text-decoration:none}
 .more{font-size:14px;color:var(--muted)}
 </style>
+<style>${LIST_ELEGANT_CSS}</style>
 </head>
 <body>
 <div class="wrap">
