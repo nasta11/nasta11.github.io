@@ -142,6 +142,9 @@ footer a{color:var(--berry)}
 .demo{margin:40px 0 0;font-size:14px;color:var(--muted)}
 .demo+.live{margin-top:10px}
 .langs{color:var(--muted);font-size:15px;margin:-18px 0 34px}
+.vnote{margin:18px auto 0;font-size:15px;color:var(--muted)}
+.vnote b{color:var(--ink);font-weight:600;white-space:nowrap}
+.vnote button{border:0;background:none;color:var(--berry);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px}
 
 .ph figure{max-width:270px;margin:0 auto}
 .frame{width:100%}
@@ -319,8 +322,9 @@ footer a{color:var(--berry)}
         <a class="pill big" href="tel:+381665796200" data-i="call2">Позвонить</a>
         <a class="pill big ghost" href="https://wa.me/381665796200">WhatsApp</a>
         <a class="pill big ghost" href="https://t.me/+381665796200">Telegram</a>
-        <a class="pill big ghost" href="viber://chat?number=%2B380934504785">Viber</a>
+        <a class="pill big ghost" id="viber" href="viber://chat?number=%2B380934504785">Viber</a>
       </div>
+      <p class="vnote" id="vnote" hidden><span data-i="vnote">Если Viber не открылся, напишите на номер</span> <b>+380 93 450 4785</b> <button type="button" id="vcopy" data-i="vcopy">Скопировать</button></p>
       <footer>
         <span data-i="f1">Botika · Сербия</span>
         <a href="https://nasta11.github.io/mastera/" data-i="f2">Каталог «Свои мастера»</a>
@@ -359,7 +363,7 @@ w2:"Gather materials",w2p:"You send photos, prices and key information. I handle
 w3:"Launch",w3p:"I show you the result, we make any changes and launch. You get a ready-to-use tool.",
 k0:"Let's discuss your <em>project</em>",k0p:"The price depends on what exactly you need. We discuss your task, I suggest a solution and name the price before we start. No unexpected costs.",
 kname:"Anastasia · Serbia",kwho:"Write or call and tell me about your business. Together we will decide what will really help.",
-klang:"We speak Russian, Ukrainian and English.",f1:"Botika · Serbia",f2:"«Svoi Mastera» catalog"};
+klang:"We speak Russian, Ukrainian and English.",vnote:"If Viber didn’t open, message this number",vcopy:"Copy",f1:"Botika · Serbia",f2:"«Svoi Mastera» catalog"};
 const els=[...document.querySelectorAll('[data-i]')];
 const RU={};els.forEach(e=>{if(e.dataset.i!=='tick')RU[e.dataset.i]=e.innerHTML});
 const tick=document.querySelector('.track');
@@ -375,6 +379,9 @@ function set(l){
   try{localStorage.setItem('botika-lang',l)}catch(e){}
 }
 btns.forEach(b=>b.addEventListener('click',()=>set(b.dataset.l)));
+const vb=document.getElementById('viber'),vn=document.getElementById('vnote'),vc=document.getElementById('vcopy');
+vb.addEventListener('click',()=>{setTimeout(()=>{if(document.visibilityState==='visible')vn.hidden=false},1500)});
+vc.addEventListener('click',()=>{try{navigator.clipboard.writeText('+380934504785').then(()=>{vc.textContent=document.documentElement.lang==='en'?'Copied':'Скопировано'}).catch(()=>{})}catch(e){}});
 let start='ru';
 if(location.hash==='#en')start='en';
 else{try{const v=localStorage.getItem('botika-lang');if(v==='en')start='en'}catch(e){}}
