@@ -165,7 +165,7 @@ td small{display:block;color:var(--muted);font-size:13px}
   <p class="lead">${cards.length} ${plural(cards.length)}${from ? ` · цены ${from}` : ""}. Где принимают, точные цены и как записаться.</p>
   ${cards.map(cardHtml).join("\n  ")}
   <a class="cta" href="${esc(catalog)}">Все мастера в каталоге →</a>
-  <div class="join"><b>Вы мастер?</b><span>Добавьте свою карточку бесплатно, это 5 минут в Telegram: <a href="https://t.me/svoi_mastera_bot">@svoi_mastera_bot</a></span></div>
+  <div class="join"><b>Вы мастер?</b><span>Добавьте свою карточку бесплатно, это 5 минут в Telegram: <a href="https://t.me/svoi_mastera_bot">@svoi_mastera_bot</a></span><span>Хотите, чтобы клиенты находили вас и в Google? Профиль в Google Картах, сайт-визитка и бот для записи: <a href="https://nasta11.github.io/usluge/">Botika studio</a></span></div>
   ${others.length ? `<div class="more">Ещё в каталоге:<ul>${others.map((o) => `<li><a href="${o.path}">${esc(title(o.service, o.city))}</a></li>`).join("")}</ul></div>` : ""}
   <div class="more">Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
@@ -548,7 +548,7 @@ ${photos.length ? `${lessons ? '<h2 class="works-h">Как проходят за
 
   ${neighbours.length ? `<div class="more">Ещё мастера: ${esc(title(m.service, m.city))}<ul>${neighbours.map((o) => `<li><a href="${o.path}">${esc(o.name)}</a></li>`).join("")}</ul></div>` : ""}
   <nav class="more" aria-label="Навигация"><a href="/mastera/">Свои мастера</a> › <a href="${categoryPath}">${esc(title(m.service, m.city))}</a></nav>
-  <p class="join">Вы мастер? <a href="https://t.me/svoi_mastera_bot">Сделайте такую страницу бесплатно</a>, это 5 минут в Telegram.</p>
+  <p class="join">Вы мастер? <a href="https://t.me/svoi_mastera_bot">Сделайте такую страницу бесплатно</a>, это 5 минут в Telegram. А профиль в Google Картах, сайт-визитку и бота для записи сделает <a href="https://nasta11.github.io/usluge/">Botika studio</a>.</p>
   <p class="foot">Botika, каталог «Свои мастера», <a href="/mastera/o-proekte/">о проекте</a></p>
 </div>
 <div class="bar">
@@ -641,7 +641,7 @@ section li{margin:4px 0}
   <nav class="crumbs">${crumbs}</nav>
   <h1>${esc(h1)}</h1>
   ${body}
-  <div class="join"><b>Вы мастер?</b><span>Добавьте себя бесплатно, это 5 минут в Telegram: <a href="https://t.me/svoi_mastera_bot">@svoi_mastera_bot</a>. Вы получите свою страницу с прайсом, адресом, фото работ и кнопкой записи.</span></div>
+  <div class="join"><b>Вы мастер?</b><span>Добавьте себя бесплатно, это 5 минут в Telegram: <a href="https://t.me/svoi_mastera_bot">@svoi_mastera_bot</a>. Вы получите свою страницу с прайсом, адресом, фото работ и кнопкой записи.</span><span>Профиль в Google Картах, сайт-визитка и бот для записи: <a href="https://nasta11.github.io/usluge/">Botika studio</a></span></div>
   <div class="more"><a href="/mastera/o-proekte/">О проекте</a> · Botika · каталог «Свои мастера» · <a href="/">nasta11.github.io</a></div>
 </div>
 <script data-goatcounter="https://botika.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
