@@ -12,19 +12,19 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /*
 VOICE: тихая роскошь, как у хорошего салона красоты
 IDEA: журнальная обложка бьюти-студии
 PICTURE: три экрана мастера на светлой пудре
-COLOUR/TYPE: пудровый беж, слива-чернила, ягодный курсив, шалфей; Playfair Display + Golos Text
+COLOUR/TYPE: пудровый беж, слива-чернила, ягодный курсив, шалфей; Cormorant Garamond + Golos Text
 LAYOUT: плавающее меню, крупная обложка с карточкой, бегущая строка, разворот услуг, примеры, контакт
 */
 :root{
   --bg:#F2EDEA; --card:#FBF8F6; --ink:#1F1418; --muted:#76666B;
   --berry:#8A3A50; --sage:#A9B8AB; --line:rgba(31,20,24,.12);
-  --serif:"Playfair Display", Georgia, serif;
+  --serif:"Cormorant Garamond", Georgia, serif;
   --sans:"Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 *{box-sizing:border-box;min-width:0}
@@ -55,23 +55,23 @@ h1 span,h1 em{display:block}
 .badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--berry)}
 h1{font:400 clamp(48px,7.4vw,104px)/.98 var(--serif);letter-spacing:-.035em;margin:0 0 32px;text-wrap:balance}
 .lead{font-size:18px;color:var(--muted);max-width:48ch;margin:0 0 12px}
-.slogan{font:italic 400 21px/1.35 var(--serif);color:var(--ink);margin:0 0 36px}
+.slogan{font:italic 500 23px/1.35 var(--serif);color:var(--ink);margin:0 0 36px}
 .actions{display:flex;flex-wrap:wrap;gap:12px}
 .meta{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:34px;font-size:14px;color:var(--muted)}
 .meta span+span{padding-left:22px;border-left:1px solid var(--line)}
 
 .card{background:var(--card);border-radius:28px;padding:26px 28px 10px;box-shadow:0 30px 60px rgba(31,20,24,.08)}
-.card h2{font:italic 400 15px/1 var(--serif);color:var(--muted);margin:0 0 8px}
+.card h2{font:italic 400 17px/1 var(--serif);color:var(--muted);margin:0 0 8px}
 .card a{display:grid;gap:4px;padding:18px 0;border-top:1px solid var(--line);text-decoration:none}
 .card a:first-of-type{border-top:0}
-.card b{font:500 21px/1.2 var(--serif);letter-spacing:-.01em}
+.card b{font:500 23px/1.2 var(--serif);letter-spacing:-.01em}
 .card small{font-size:14px;color:var(--muted)}
 .card a:hover b{color:var(--berry)}
 
 /* marquee */
 .ticker{border-block:1px solid var(--line);overflow:hidden;padding:20px 0}
 .track{display:flex;width:max-content;animation:run 40s linear infinite}
-.track span{font:italic 400 clamp(22px,2.6vw,32px)/1 var(--serif);letter-spacing:-.02em;padding:0 22px;white-space:nowrap}
+.track span{font:italic 500 clamp(25px,2.9vw,36px)/1 var(--serif);letter-spacing:-.02em;padding:0 22px;white-space:nowrap}
 .track span:nth-child(even){color:var(--sage);font-style:normal;padding:0}
 @keyframes run{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.track{animation:none}html{scroll-behavior:auto}}
@@ -79,11 +79,11 @@ h1{font:400 clamp(48px,7.4vw,104px)/.98 var(--serif);letter-spacing:-.035em;marg
 /* sections */
 .band{padding:clamp(72px,10vw,128px) 0}
 .head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:52px}
-h2.t{font:400 clamp(38px,4.8vw,64px)/1 var(--serif);letter-spacing:-.03em;margin:0}
+h2.t{font:500 clamp(42px,5.4vw,72px)/1 var(--serif);letter-spacing:-.02em;margin:0}
 .head p{margin:0;color:var(--muted);max-width:44ch}
 .svc{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .svc li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;padding:34px 0;border-bottom:1px solid var(--line);align-items:baseline}
-.svc h3{font:400 clamp(26px,2.8vw,36px)/1.1 var(--serif);letter-spacing:-.02em;margin:0}
+.svc h3{font:500 clamp(29px,3.1vw,40px)/1.1 var(--serif);letter-spacing:-.01em;margin:0}
 .svc p{margin:0;color:var(--muted)}
 .free{display:table;margin:0 0 12px;font:500 13px/1 var(--sans);background:var(--sage);color:var(--ink);border-radius:999px;padding:6px 11px;vertical-align:middle;letter-spacing:0}
 
@@ -95,7 +95,7 @@ h2.t{font:400 clamp(38px,4.8vw,64px)/1 var(--serif);letter-spacing:-.03em;margin
 .frame img{display:block;width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:30px}
 .ph:nth-child(2){margin-top:56px}
 .ph figcaption{margin-top:22px}
-.ph figcaption b{display:block;font:400 24px/1.2 var(--serif);letter-spacing:-.01em}
+.ph figcaption b{display:block;font:500 27px/1.2 var(--serif);letter-spacing:-.01em}
 .ph figcaption span{color:var(--muted);font-size:15px}
 .live{margin:56px 0 0;color:var(--muted)}
 .live a{color:var(--berry);text-underline-offset:3px}
@@ -104,15 +104,15 @@ h2.t{font:400 clamp(38px,4.8vw,64px)/1 var(--serif);letter-spacing:-.03em;margin
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));counter-reset:s;border-top:1px solid var(--line)}
 .steps li{counter-increment:s;padding:30px 32px 0 0}
 .steps li+li{padding-left:32px;border-left:1px solid var(--line)}
-.steps li::before{content:counter(s,decimal-leading-zero);display:block;font:italic 400 44px/1 var(--serif);color:var(--berry);margin-bottom:18px}
-.steps h3{font:400 28px/1.15 var(--serif);letter-spacing:-.02em;margin:0 0 10px}
+.steps li::before{content:counter(s,decimal-leading-zero);display:block;font:italic 500 50px/1 var(--serif);font-variant-numeric:lining-nums;color:var(--berry);margin-bottom:18px}
+.steps h3{font:500 31px/1.15 var(--serif);letter-spacing:-.01em;margin:0 0 10px}
 .steps p{margin:0;color:var(--muted)}
 
 /* contact */
 .contact{text-align:center;padding-bottom:40px}
 .contact .sub{color:var(--muted);max-width:44ch;margin:22px auto 0}
-.name{font:italic 400 22px/1.2 var(--serif);color:var(--berry);margin:48px 0 0}
-.tel{display:inline-block;font:400 clamp(40px,7.4vw,96px)/1 var(--serif);letter-spacing:-.035em;text-decoration:none;margin:14px 0 18px;white-space:nowrap}
+.name{font:italic 500 25px/1.2 var(--serif);color:var(--berry);margin:48px 0 0}
+.tel{display:inline-block;font:500 clamp(44px,8vw,104px)/1 var(--serif);font-variant-numeric:lining-nums;letter-spacing:-.02em;text-decoration:none;margin:14px 0 18px;white-space:nowrap}
 .tel:hover{color:var(--berry)}
 .who{color:var(--muted);margin:0 auto 34px;max-width:44ch}
 .contact .actions{justify-content:center}
@@ -156,7 +156,7 @@ footer a{color:var(--berry)}
 .m-search{position:absolute;top:22px;left:14px;right:14px;z-index:2;background:var(--card);border-radius:999px;padding:9px 14px;color:var(--muted);box-shadow:0 4px 12px rgba(31,20,24,.08)}
 .m-map{display:block;width:100%;height:52%}
 .m-sheet{flex:1;background:var(--card);border-radius:20px 20px 0 0;margin-top:-18px;position:relative;padding:16px 14px;display:flex;flex-direction:column;gap:3px}
-.m-sheet b{font:500 17px/1.2 var(--serif)}
+.m-sheet b{font:600 19px/1.2 var(--serif)}
 .m-sheet span{color:var(--muted)}
 .m-sheet .m-open{color:#5F7F66}
 .m-chips{display:flex;gap:6px;margin:10px 0}
@@ -169,11 +169,11 @@ footer a{color:var(--berry)}
 /* site */
 .site-s{padding:28px 14px 14px;gap:10px;background:var(--bg)}
 .s-head{display:flex;align-items:center;gap:10px}
-.s-head b{display:block;font:500 19px/1 var(--serif)}
-.s-head i{font:italic 400 13px/1.3 var(--serif);color:var(--berry)}
+.s-head b{display:block;font:600 21px/1 var(--serif)}
+.s-head i{font:italic 500 15px/1.3 var(--serif);color:var(--berry)}
 .s-book{background:var(--ink);color:var(--card);text-align:center;border-radius:999px;padding:9px;font-weight:600}
 .s-box{background:var(--card);border-radius:14px;padding:10px 12px}
-.s-box small{display:block;font:italic 400 12px/1 var(--serif);color:var(--muted);margin-bottom:6px}
+.s-box small{display:block;font:italic 500 14px/1 var(--serif);color:var(--muted);margin-bottom:6px}
 .s-box p{display:flex;align-items:baseline;gap:4px;margin:4px 0}
 .s-box p em{flex:1;border-bottom:1px dotted rgba(31,20,24,.3);transform:translateY(-3px)}
 .s-box p span:last-child{font-weight:600;white-space:nowrap}
